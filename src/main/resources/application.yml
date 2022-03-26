@@ -1,0 +1,19 @@
+# Server config
+server:
+  port: 8081
+
+# Spring config
+spring:
+  application:
+    name: customer-info-service
+  datasource:
+    url: jdbc:sqlserver://localhost;databaseName=DBOrchestrator
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: sa
+    password: sa
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+    hibernate:
+      ddl-auto: update

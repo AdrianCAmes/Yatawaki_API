@@ -1,0 +1,15 @@
+package com.orchestrator.orchestrator.utils;
+
+import com.orchestrator.orchestrator.model.UserStatistics;
+import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsChangeRequestDto;
+import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsUpdateRequestDto;
+
+public interface UserStatisticsUtils {
+    UserStatistics buildDomainFromCreateRequestDto(UserStatisticsCreateRequestDto userStatisticsCreateRequestDto) throws IllegalAccessException;
+    UserStatistics buildDomainFromUpdateRequestDto(UserStatisticsUpdateRequestDto userStatisticsUpdateRequestDto) throws IllegalAccessException;
+    UserStatistics buildDomainFromChangeRequestDto(UserStatisticsChangeRequestDto userStatisticsChangeRequestDto) throws IllegalAccessException;
+    UserStatisticsCreateRequestDto buildCreateRequestDtoFromDomain(UserStatistics userStatistics) throws IllegalAccessException;
+    UserStatisticsUpdateRequestDto buildUpdateRequestDtoFromDomain(UserStatistics userStatistics) throws IllegalAccessException;
+    UserStatisticsChangeRequestDto buildChangeRequestDtoFromDomain(UserStatistics userStatistics) throws IllegalAccessException;
+}

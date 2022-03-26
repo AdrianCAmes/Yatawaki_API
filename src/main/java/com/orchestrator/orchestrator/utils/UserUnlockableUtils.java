@@ -1,0 +1,15 @@
+package com.orchestrator.orchestrator.utils;
+
+import com.orchestrator.orchestrator.model.UserUnlockable;
+import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableChangeRequestDto;
+import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableUpdateRequestDto;
+
+public interface UserUnlockableUtils {
+    UserUnlockable buildDomainFromCreateRequestDto(UserUnlockableCreateRequestDto userUnlockableCreateRequestDto) throws IllegalAccessException;
+    UserUnlockable buildDomainFromUpdateRequestDto(UserUnlockableUpdateRequestDto userUnlockableUpdateRequestDto) throws IllegalAccessException;
+    UserUnlockable buildDomainFromChangeRequestDto(UserUnlockableChangeRequestDto userUnlockableChangeRequestDto) throws IllegalAccessException;
+    UserUnlockableCreateRequestDto buildCreateRequestDtoFromDomain(UserUnlockable userUnlockable) throws IllegalAccessException;
+    UserUnlockableUpdateRequestDto buildUpdateRequestDtoFromDomain(UserUnlockable userUnlockable) throws IllegalAccessException;
+    UserUnlockableChangeRequestDto buildChangeRequestDtoFromDomain(UserUnlockable userUnlockable) throws IllegalAccessException;
+}

@@ -1,0 +1,15 @@
+package com.orchestrator.orchestrator.utils;
+
+import com.orchestrator.orchestrator.model.SymphonyInstrument;
+import com.orchestrator.orchestrator.model.dto.symphonyinstrument.request.SymphonyInstrumentChangeRequestDto;
+import com.orchestrator.orchestrator.model.dto.symphonyinstrument.request.SymphonyInstrumentCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.symphonyinstrument.request.SymphonyInstrumentUpdateRequestDto;
+
+public interface SymphonyInstrumentUtils {
+    SymphonyInstrument buildDomainFromCreateRequestDto(SymphonyInstrumentCreateRequestDto symphonyInstrumentCreateRequestDto) throws IllegalAccessException;
+    SymphonyInstrument buildDomainFromUpdateRequestDto(SymphonyInstrumentUpdateRequestDto symphonyInstrumentUpdateRequestDto) throws IllegalAccessException;
+    SymphonyInstrument buildDomainFromChangeRequestDto(SymphonyInstrumentChangeRequestDto symphonyInstrumentChangeRequestDto) throws IllegalAccessException;
+    SymphonyInstrumentCreateRequestDto buildCreateRequestDtoFromDomain(SymphonyInstrument symphonyInstrument) throws IllegalAccessException;
+    SymphonyInstrumentUpdateRequestDto buildUpdateRequestDtoFromDomain(SymphonyInstrument symphonyInstrument) throws IllegalAccessException;
+    SymphonyInstrumentChangeRequestDto buildChangeRequestDtoFromDomain(SymphonyInstrument symphonyInstrument) throws IllegalAccessException;
+}
