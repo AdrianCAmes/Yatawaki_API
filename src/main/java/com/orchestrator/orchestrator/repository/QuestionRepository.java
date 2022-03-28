@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    String QUERY_QUESTIONS_RANK = "SELECT q FROM Question q WHERE q.rank.idUser = :idUser and u.status = 1";
+    String QUERY_QUESTIONS_RANK = "SELECT q FROM Question q WHERE q.rank.level = :level and q.status = 1";
 
     @Query(value = QUERY_QUESTIONS_RANK)
     List<Question> findByLevelLessOrEqualThan(Integer level);
