@@ -119,5 +119,20 @@ public class TriviaController {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/opened-trivias")
+    public ResponseEntity<Object> findOpenedTrivias(){
+        log.info("Get operation in /trivia/opened-trivias");
+        try {
+            List<Trivia> retrievedTrivias = triviaService.findAll();
+            if (!retrievedTrivias.isEmpty()) {
+                return new ResponseEntity<>(retrievedTrivias, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Trivias not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }
