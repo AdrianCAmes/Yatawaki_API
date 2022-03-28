@@ -14,6 +14,7 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "idRank", nullable = false)
     private Rank rank;
+    private String description;
     private String optionsJson;
     private Integer status;
 }

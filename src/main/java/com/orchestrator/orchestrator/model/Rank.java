@@ -12,6 +12,7 @@ public class Rank {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRank;
     private String name;
+    private Integer level;
     private Integer maxExperience;
     private Integer status;
 }

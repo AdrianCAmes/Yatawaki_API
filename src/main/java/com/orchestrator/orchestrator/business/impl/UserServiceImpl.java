@@ -2,6 +2,8 @@ package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.*;
 import com.orchestrator.orchestrator.model.*;
+import com.orchestrator.orchestrator.model.dto.user.request.UserAuthenticateRequestDto;
+import com.orchestrator.orchestrator.model.dto.user.response.UserAuthenticateResponseDto;
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
@@ -11,25 +13,25 @@ import com.orchestrator.orchestrator.utils.UserRankUtils;
 import com.orchestrator.orchestrator.utils.UserStatisticsUtils;
 import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
 import com.orchestrator.orchestrator.utils.constants.NumericConstants;
-import com.orchestrator.orchestrator.utils.constants.RankConstants;
-import com.orchestrator.orchestrator.utils.constants.UserStatusConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    // Self repository
     private final UserRepository userRepository;
+    // Utils
     private final GeneralUtils generalUtils;
     private final UserStatisticsUtils userStatisticsUtils;
     private final UserRankUtils userRankUtils;
     private final UserUnlockableUtils userUnlockableUtils;
-
+    // Services
     private final UserStatisticsService userStatisticsService;
     private final RankService rankService;
     private final UserRankService userRankService;
@@ -86,8 +88,7 @@ public class UserServiceImpl implements UserService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases
-    // TODO: Crear nuevo DTO para devolver
+    // region Use Cases External
     public User register(User user) throws IllegalAccessException {
         // Create new user statistics for user
         UserStatisticsCreateRequestDto userStatisticsCreateRequestDto = new UserStatisticsCreateRequestDto();
@@ -101,7 +102,7 @@ public class UserServiceImpl implements UserService {
         // Set user rank to one
         UserRankCreateRequestDto userRankCreateRequestDto = new UserRankCreateRequestDto();
         userRankCreateRequestDto.setIdUser(createdUser.getIdUser());
-        userRankCreateRequestDto.setIdRank(rankService.findByName(RankConstants.RANK_ONE.getName()).getIdRank());
+        userRankCreateRequestDto.setIdRank(rankService.findByLevel(NumericConstants.ONE.getValue()).getIdRank());
         UserRank userRankToSave = userRankUtils.buildDomainFromCreateRequestDto(userRankCreateRequestDto);
         userRankService.create(userRankToSave);
 
@@ -116,5 +117,22 @@ public class UserServiceImpl implements UserService {
         }
         return createdUser;
     }
-    // endregion Use Cases
+
+    @Override
+    public UserAuthenticateResponseDto authenticate(UserAuthenticateRequestDto userAuthenticateRequestDto) {
+        Optional<User> retrievedUser = userRepository.findByUniqueIdentifierAndPassword(userAuthenticateRequestDto.getUniqueIdentifier(), userAuthenticateRequestDto.getPassword());
+        UserAuthenticateResponseDto userAuthenticateResponseDto = new UserAuthenticateResponseDto();
+        if (retrievedUser.isPresent()) {
+            userAuthenticateResponseDto.setIsAuthenticated(Boolean.TRUE);
+            userAuthenticateResponseDto.setJwt("Complete with implementation");
+        } else {
+            userAuthenticateResponseDto.setIsAuthenticated(Boolean.FALSE);
+            userAuthenticateResponseDto.setJwt(null);
+        }
+        return userAuthenticateResponseDto;
+    }
+    // endregion Use Cases External
+
+    // region Use Cases Internal
+    // endregion Use Cases Internal
 }

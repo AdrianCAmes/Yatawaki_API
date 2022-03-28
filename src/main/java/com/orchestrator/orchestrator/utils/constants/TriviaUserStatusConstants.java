@@ -4,8 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum TriviaUserStatusConstants {
-    BLOCKED(0),
-    ACTIVE(1);
+    DELETED(0),
+    ACTIVE(1),
+    CANCELED(2);
 
     Integer value;
 

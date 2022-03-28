@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RankRepository extends JpaRepository<Rank, Long> {
-    Rank findByName(String name);
+    Rank findByLevel(Integer level);
 }

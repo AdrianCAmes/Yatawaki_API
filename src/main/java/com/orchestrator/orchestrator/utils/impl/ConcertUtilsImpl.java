@@ -33,7 +33,7 @@ public class ConcertUtilsImpl implements ConcertUtils {
         concert.setPoints(NumericConstants.ZERO.getValue());
         concert.setAccuracyRate(NumericConstants.ZERO.getValue().doubleValue());
         concert.setGesturesCompleted(NumericConstants.ZERO.getValue());
-        concert.setStatus(GameStatusConstants.ACTIVE.getValue());
+        concert.setStatus(GameStatusConstants.STARTED.getValue());
         generalUtils.mapFields(concertCreateRequestDto, concert);
         return concert;
     }

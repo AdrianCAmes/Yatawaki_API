@@ -4,7 +4,8 @@ import com.orchestrator.orchestrator.model.dto.game.request.GameCreateRequestDto
 import lombok.Data;
 
 @Data
-public class TriviaCreateRequestDto extends GameCreateRequestDto {
+public class TriviaOpenRequestDto extends GameCreateRequestDto {
     private String hallCode;
     private Integer currencyPool;
+    private Long idUser;
 }

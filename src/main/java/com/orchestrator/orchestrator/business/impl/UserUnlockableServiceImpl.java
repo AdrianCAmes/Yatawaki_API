@@ -1,9 +1,14 @@
 package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.UserUnlockableService;
+import com.orchestrator.orchestrator.model.Unlockable;
 import com.orchestrator.orchestrator.model.UserUnlockable;
+import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableUnlockRequestDto;
+import com.orchestrator.orchestrator.repository.UnlockableRepository;
 import com.orchestrator.orchestrator.repository.UserUnlockableRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +18,13 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class UserUnlockableServiceImpl implements UserUnlockableService {
+    // Self repository
     private final UserUnlockableRepository userUnlockableRepository;
+    // Utils
     private final GeneralUtils generalUtils;
+    private final UserUnlockableUtils userUnlockableUtils;
+    // Services
+    private final UnlockableRepository unlockableService;
 
     // region CRUD Operations
     @Override
@@ -66,6 +76,29 @@ public class UserUnlockableServiceImpl implements UserUnlockableService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases
-    // endregion Use Cases
+    // region Use Cases External
+    @Override
+    public List<Unlockable> findSymphoniesByUser(Long idUser) {
+        return userUnlockableRepository.findSymphoniesByUser(idUser);
+    }
+
+    @Override
+    public List<Unlockable> unlockObjectsByUnlocker(UserUnlockableUnlockRequestDto userUnlockableUnlockRequestDto) throws IllegalAccessException {
+        List<Unlockable> objectsToUnlock = unlockableService.findByUnlockerTypeAndUnlockerValue(userUnlockableUnlockRequestDto.getUnlockerType(), userUnlockableUnlockRequestDto.getUnlockerValue());
+        if (!objectsToUnlock.isEmpty()) {
+            for (Unlockable unlockable : objectsToUnlock) {
+                UserUnlockableCreateRequestDto userUnlockableCreateRequestDto = new UserUnlockableCreateRequestDto();
+                userUnlockableCreateRequestDto.setIdUnlockable(unlockable.getIdUnlockable());
+                userUnlockableCreateRequestDto.setIdUser(userUnlockableUnlockRequestDto.getIdUser());
+
+                UserUnlockable userUnlockable = userUnlockableUtils.buildDomainFromCreateRequestDto(userUnlockableCreateRequestDto);
+                create(userUnlockable);
+            }
+        }
+        return objectsToUnlock;
+    }
+    // endregion Use Cases External
+
+    // region Use Cases Internal
+    // endregion Use Cases Internal
 }

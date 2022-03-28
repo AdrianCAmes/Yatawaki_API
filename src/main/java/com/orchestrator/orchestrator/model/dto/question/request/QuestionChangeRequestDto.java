@@ -6,6 +6,7 @@ import lombok.Data;
 public class QuestionChangeRequestDto {
     private Long idQuestion;
     private Long idRank;
+    private String description;
     private String optionsJson;
     private Integer status;
 }

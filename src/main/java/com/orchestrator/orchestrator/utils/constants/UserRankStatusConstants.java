@@ -4,8 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum UserRankStatusConstants {
-    BLOCKED(0),
-    ACTIVE(1);
+    DELETED(0),
+    ACTIVE(1),
+    FINISHED(2);
 
     Integer value;
 
