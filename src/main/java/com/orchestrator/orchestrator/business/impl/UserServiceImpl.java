@@ -1,6 +1,7 @@
 package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.UserService;
+import com.orchestrator.orchestrator.configuration.JwtUtil;
 import com.orchestrator.orchestrator.model.*;
 import com.orchestrator.orchestrator.model.dto.user.request.UserAuthenticateRequestDto;
 import com.orchestrator.orchestrator.model.dto.user.response.UserAuthenticateResponseDto;
@@ -16,6 +17,14 @@ import com.orchestrator.orchestrator.utils.constants.NumericConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +34,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     // Self repository
     private final UserRepository userRepository;
     // Utils
@@ -42,6 +51,13 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Lazy
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtil jwtUtilService;
 
     // region CRUD Operations
     @Override
@@ -126,16 +142,53 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserAuthenticateResponseDto authenticate(UserAuthenticateRequestDto userAuthenticateRequestDto) {
-        Optional<User> retrievedUser = userRepository.findByUniqueIdentifierAndPassword(userAuthenticateRequestDto.getUniqueIdentifier(), userAuthenticateRequestDto.getPassword());
         UserAuthenticateResponseDto userAuthenticateResponseDto = new UserAuthenticateResponseDto();
+        List<GrantedAuthority> grantedAuths = AuthorityUtils.commaSeparatedStringToAuthorityList("user");
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userAuthenticateRequestDto.getUniqueIdentifier(),
+                userAuthenticateRequestDto.getPassword(), grantedAuths));
+
+        final UserDetails userDetails = loadUserByUsername(userAuthenticateRequestDto.getUniqueIdentifier());
+
+        final String jwt = jwtUtilService.generateToken(userDetails);
+        Optional<User> retrievedUser = userRepository.findByUniqueIdentifier(userAuthenticateRequestDto.getUniqueIdentifier());
+
         if (retrievedUser.isPresent()) {
             userAuthenticateResponseDto.setIsAuthenticated(Boolean.TRUE);
-            userAuthenticateResponseDto.setJwt("Complete with implementation");
+            userAuthenticateResponseDto.setJwt(jwt);
+            userAuthenticateResponseDto.setRole(retrievedUser.get().getRole());
         } else {
             userAuthenticateResponseDto.setIsAuthenticated(Boolean.FALSE);
             userAuthenticateResponseDto.setJwt(null);
         }
         return userAuthenticateResponseDto;
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> retrievedUserByEmail = userRepository.findByEmail(username);
+        Optional<User> retrievedUserByNick = userRepository.findByNickname(username);
+        if (retrievedUserByEmail.isPresent()) {
+            User user = retrievedUserByEmail.get();
+            org.springframework.security.core.userdetails.User.UserBuilder builder = null;
+            builder = org.springframework.security.core.userdetails.User.withUsername(username);
+            builder.password(user.getPassword()).roles("USUARIO");
+            return builder.build();
+
+        } else if (retrievedUserByNick.isPresent()) {
+            User user = retrievedUserByNick.get();
+            org.springframework.security.core.userdetails.User.UserBuilder builder = null;
+            builder = org.springframework.security.core.userdetails.User.withUsername(username);
+            builder.password(user.getPassword()).roles("USUARIO");
+            return builder.build();
+        }
+
+        throw new NoSuchElementException("Element does not exist in database");
+    }
+    // endregion Use Cases External
+
+    // region Use Cases Internal
+
+    // endregion Use Cases Internal
     // endregion Use Cases
 }
