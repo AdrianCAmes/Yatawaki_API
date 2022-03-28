@@ -2,8 +2,10 @@ package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.TriviaUserService;
 import com.orchestrator.orchestrator.model.TriviaUser;
+import com.orchestrator.orchestrator.repository.TriviaRepository;
 import com.orchestrator.orchestrator.repository.TriviaUserRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.TriviaUserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -68,9 +70,6 @@ public class TriviaUserServiceImpl implements TriviaUserService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
-    // endregion Use Cases External
-
-    // region Use Cases Internal
-    // endregion Use Cases Internal
+    // region Use Cases
+    // endregion Use Cases
 }

@@ -68,9 +68,6 @@ public class HiddenRecordServiceImpl implements HiddenRecordService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
-    // endregion Use Cases External
-
-    // region Use Cases Internal
-    // endregion Use Cases Internal
+    // region Use Cases
+    // endregion Use Cases
 }

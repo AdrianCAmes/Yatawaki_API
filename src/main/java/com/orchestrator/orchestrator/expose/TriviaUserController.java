@@ -1,6 +1,7 @@
 package com.orchestrator.orchestrator.expose;
 
 import com.orchestrator.orchestrator.business.TriviaUserService;
+import com.orchestrator.orchestrator.model.Trivia;
 import com.orchestrator.orchestrator.model.TriviaUser;
 import com.orchestrator.orchestrator.model.dto.triviauser.request.TriviaUserChangeRequestDto;
 import com.orchestrator.orchestrator.model.dto.triviauser.request.TriviaUserCreateRequestDto;

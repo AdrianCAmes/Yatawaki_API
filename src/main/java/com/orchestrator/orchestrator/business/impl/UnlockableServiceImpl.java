@@ -68,13 +68,6 @@ public class UnlockableServiceImpl implements UnlockableService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
-    // endregion Use Cases External
-
-    // region Use Cases Internal
-    @Override
-    public List<Unlockable> findByUnlockerTypeAndUnlockerValue(String unlockerType, Integer unlockerValue) {
-        return unlockableRepository.findByUnlockerTypeAndUnlockerValue(unlockerType, unlockerValue);
-    }
-    // endregion Use Cases Internal
+    // region Use Cases
+    // endregion Use Cases
 }
