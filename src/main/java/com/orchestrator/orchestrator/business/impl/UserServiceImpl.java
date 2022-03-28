@@ -15,6 +15,8 @@ import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
 import com.orchestrator.orchestrator.utils.constants.NumericConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +39,9 @@ public class UserServiceImpl implements UserService {
     private final UserRankRepository userRankRepository;
     private final UnlockableRepository unlockableRepository;
     private final UserUnlockableRepository userUnlockableRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // region CRUD Operations
     @Override
@@ -97,6 +102,7 @@ public class UserServiceImpl implements UserService {
 
         // Create new user
         user.setUserStatistics(createdUserStatistics);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User createdUser = create(user);
 
         // Set user rank to one
