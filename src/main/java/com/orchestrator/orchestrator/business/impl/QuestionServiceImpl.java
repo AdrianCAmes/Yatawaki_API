@@ -68,13 +68,6 @@ public class QuestionServiceImpl implements QuestionService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
-    // endregion Use Cases External
-
-    // region Use Cases Internal
-    @Override
-    public List<Question> findByLevelLessOrEqualThan(Integer level) {
-        return questionRepository.findByLevelLessOrEqualThan(level);
-    }
-    // endregion Use Cases Internal
+    // region Use Cases
+    // endregion Use Cases
 }

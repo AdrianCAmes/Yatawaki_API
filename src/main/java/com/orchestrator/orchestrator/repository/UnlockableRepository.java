@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface UnlockableRepository extends JpaRepository<Unlockable, Long> {
-    String QUERY_TO_UNLOCK = "SELECT u FROM Unlockable u WHERE u.unlockerType = :unlockerType and u.unlockerValue = :unlockerValue and u.status = 1";
+    String QUERY_TO_UNLOCK = "SELECT u FROM Unlockable u WHERE u.unlockerType = :unlockerType and u.unlockerValue <= :unlockerValue and u.status = 1";
 
     @Query(value = QUERY_TO_UNLOCK)
     List<Unlockable> findByUnlockerTypeAndUnlockerValue(String unlockerType, Integer unlockerValue);

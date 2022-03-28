@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +24,8 @@ public class UserUnlockableServiceImpl implements UserUnlockableService {
     // Utils
     private final GeneralUtils generalUtils;
     private final UserUnlockableUtils userUnlockableUtils;
-    // Services
-    private final UnlockableRepository unlockableService;
+    // Other repositories
+    private final UnlockableRepository unlockableRepository;
 
     // region CRUD Operations
     @Override
@@ -76,7 +77,7 @@ public class UserUnlockableServiceImpl implements UserUnlockableService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
+    // region Use Cases
     @Override
     public List<Unlockable> findSymphoniesByUser(Long idUser) {
         return userUnlockableRepository.findSymphoniesByUser(idUser);
@@ -84,7 +85,10 @@ public class UserUnlockableServiceImpl implements UserUnlockableService {
 
     @Override
     public List<Unlockable> unlockObjectsByUnlocker(UserUnlockableUnlockRequestDto userUnlockableUnlockRequestDto) throws IllegalAccessException {
-        List<Unlockable> objectsToUnlock = unlockableService.findByUnlockerTypeAndUnlockerValue(userUnlockableUnlockRequestDto.getUnlockerType(), userUnlockableUnlockRequestDto.getUnlockerValue());
+        List<Long> ownedUnlockables = userUnlockableRepository.findUnlockablesByUser(userUnlockableUnlockRequestDto.getIdUser()).stream().map(Unlockable::getIdUnlockable).collect(Collectors.toList());
+        List<Unlockable> objectsToUnlock = unlockableRepository.findByUnlockerTypeAndUnlockerValue(userUnlockableUnlockRequestDto.getUnlockerType(), userUnlockableUnlockRequestDto.getUnlockerValue()).stream()
+                .filter(object -> !ownedUnlockables.contains(object.getIdUnlockable()))
+                .collect(Collectors.toList());
         if (!objectsToUnlock.isEmpty()) {
             for (Unlockable unlockable : objectsToUnlock) {
                 UserUnlockableCreateRequestDto userUnlockableCreateRequestDto = new UserUnlockableCreateRequestDto();
@@ -97,8 +101,5 @@ public class UserUnlockableServiceImpl implements UserUnlockableService {
         }
         return objectsToUnlock;
     }
-    // endregion Use Cases External
-
-    // region Use Cases Internal
-    // endregion Use Cases Internal
+    // endregion Use Cases
 }

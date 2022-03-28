@@ -1,13 +1,13 @@
 package com.orchestrator.orchestrator.business.impl;
 
-import com.orchestrator.orchestrator.business.*;
+import com.orchestrator.orchestrator.business.UserService;
 import com.orchestrator.orchestrator.model.*;
 import com.orchestrator.orchestrator.model.dto.user.request.UserAuthenticateRequestDto;
 import com.orchestrator.orchestrator.model.dto.user.response.UserAuthenticateResponseDto;
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
-import com.orchestrator.orchestrator.repository.UserRepository;
+import com.orchestrator.orchestrator.repository.*;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
 import com.orchestrator.orchestrator.utils.UserRankUtils;
 import com.orchestrator.orchestrator.utils.UserStatisticsUtils;
@@ -31,12 +31,12 @@ public class UserServiceImpl implements UserService {
     private final UserStatisticsUtils userStatisticsUtils;
     private final UserRankUtils userRankUtils;
     private final UserUnlockableUtils userUnlockableUtils;
-    // Services
-    private final UserStatisticsService userStatisticsService;
-    private final RankService rankService;
-    private final UserRankService userRankService;
-    private final UnlockableService unlockableService;
-    private final UserUnlockableService userUnlockableService;
+    // Other Repositories
+    private final UserStatisticsRepository userStatisticsRepository;
+    private final RankRepository rankRepository;
+    private final UserRankRepository userRankRepository;
+    private final UnlockableRepository unlockableRepository;
+    private final UserUnlockableRepository userUnlockableRepository;
 
     // region CRUD Operations
     @Override
@@ -88,12 +88,12 @@ public class UserServiceImpl implements UserService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
+    // region Use Cases
     public User register(User user) throws IllegalAccessException {
         // Create new user statistics for user
         UserStatisticsCreateRequestDto userStatisticsCreateRequestDto = new UserStatisticsCreateRequestDto();
         UserStatistics userStatisticsToSave = userStatisticsUtils.buildDomainFromCreateRequestDto(userStatisticsCreateRequestDto);
-        UserStatistics createdUserStatistics = userStatisticsService.create(userStatisticsToSave);
+        UserStatistics createdUserStatistics = userStatisticsRepository.save(userStatisticsToSave);
 
         // Create new user
         user.setUserStatistics(createdUserStatistics);
@@ -102,18 +102,18 @@ public class UserServiceImpl implements UserService {
         // Set user rank to one
         UserRankCreateRequestDto userRankCreateRequestDto = new UserRankCreateRequestDto();
         userRankCreateRequestDto.setIdUser(createdUser.getIdUser());
-        userRankCreateRequestDto.setIdRank(rankService.findByLevel(NumericConstants.ONE.getValue()).getIdRank());
+        userRankCreateRequestDto.setIdRank(rankRepository.findByLevel(NumericConstants.ONE.getValue()).getIdRank());
         UserRank userRankToSave = userRankUtils.buildDomainFromCreateRequestDto(userRankCreateRequestDto);
-        userRankService.create(userRankToSave);
+        userRankRepository.save(userRankToSave);
 
         // Grant basic unlockable package
-        List<Unlockable> baseUnlockables = unlockableService.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.RANK.getName(), 1);
+        List<Unlockable> baseUnlockables = unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.RANK.getName(), 1);
         for(Unlockable unlockable : baseUnlockables) {
             UserUnlockableCreateRequestDto userUnlockableCreateRequestDto = new UserUnlockableCreateRequestDto();
             userUnlockableCreateRequestDto.setIdUser(createdUser.getIdUser());
             userUnlockableCreateRequestDto.setIdUnlockable(unlockable.getIdUnlockable());
             UserUnlockable userUnlockableToSave = userUnlockableUtils.buildDomainFromCreateRequestDto(userUnlockableCreateRequestDto);
-            userUnlockableService.create(userUnlockableToSave);
+            userUnlockableRepository.save(userUnlockableToSave);
         }
         return createdUser;
     }
@@ -131,8 +131,5 @@ public class UserServiceImpl implements UserService {
         }
         return userAuthenticateResponseDto;
     }
-    // endregion Use Cases External
-
-    // region Use Cases Internal
-    // endregion Use Cases Internal
+    // endregion Use Cases
 }

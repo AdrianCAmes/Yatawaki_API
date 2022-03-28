@@ -1,16 +1,18 @@
 package com.orchestrator.orchestrator.business.impl;
 
-import com.orchestrator.orchestrator.business.*;
+import com.orchestrator.orchestrator.business.TriviaService;
 import com.orchestrator.orchestrator.model.*;
 import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaJoinRequestDto;
 import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaOpenRequestDto;
 import com.orchestrator.orchestrator.model.dto.triviaquestion.request.TriviaQuestionCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.triviauser.request.TriviaUserCreateRequestDto;
-import com.orchestrator.orchestrator.repository.TriviaRepository;
+import com.orchestrator.orchestrator.repository.*;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
 import com.orchestrator.orchestrator.utils.TriviaQuestionUtils;
 import com.orchestrator.orchestrator.utils.TriviaUserUtils;
 import com.orchestrator.orchestrator.utils.TriviaUtils;
+import com.orchestrator.orchestrator.utils.constants.GameStatusConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +31,14 @@ public class TriviaServiceImpl implements TriviaService {
     private final TriviaUtils triviaUtils;
     private final TriviaUserUtils triviaUserUtils;
     private final TriviaQuestionUtils triviaQuestionUtils;
-    // Services
-    private final UserService userService;
-    private final UserRankService userRankService;
-    private final QuestionService questionService;
-    private final TriviaUserService triviaUserService;
-    private final TriviaQuestionService triviaQuestionService;
+    // Other repositories
+    private final UserRankRepository userRankRepository;
+    private final QuestionRepository questionRepository;
+    private final TriviaUserRepository triviaUserRepository;
+    private final TriviaQuestionRepository triviaQuestionRepository;
 
     private final Integer NUMBER_OF_QUESTIONS = 4;
+    private final Integer NUMBER_OF_PARTICIPANTS = 4;
 
     // region CRUD Operations
     @Override
@@ -88,18 +90,16 @@ public class TriviaServiceImpl implements TriviaService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
+    // region Use Cases
     @Override
     public Trivia openTrivia(TriviaOpenRequestDto triviaOpenRequestDto) throws IllegalAccessException {
         // Find user that created the trivia
-        User creatorUser = userService.findById(triviaOpenRequestDto.getIdUser());
-        UserRank activeUserRank = userRankService.findLastActiveByUser(triviaOpenRequestDto.getIdUser());
-        if (creatorUser == null || activeUserRank == null) {
-            throw new NoSuchElementException("Creator user not found in database");
+        UserRank activeUserRank = userRankRepository.findLastActiveByUser(triviaOpenRequestDto.getIdUser()).orElse(null);
+        if (activeUserRank == null) {
+            throw new NoSuchElementException("Creator user does not have an active rank");
         }
-
         // Find questions that match user level
-        List<Question> questionsForUser = questionService.findByLevelLessOrEqualThan(activeUserRank.getRank().getLevel());
+        List<Question> questionsForUser = questionRepository.findByLevelLessOrEqualThan(activeUserRank.getRank().getLevel());
         if (questionsForUser.size() < NUMBER_OF_QUESTIONS) {
             throw  new IndexOutOfBoundsException("Not enough questions in database");
         }
@@ -107,8 +107,8 @@ public class TriviaServiceImpl implements TriviaService {
         // Create new trivia
         TriviaCreateRequestDto triviaCreateRequestDto = new TriviaCreateRequestDto();
         triviaCreateRequestDto.setIdSymphony(triviaOpenRequestDto.getIdSymphony());
-        triviaCreateRequestDto.setCurrencyPool(triviaCreateRequestDto.getCurrencyPool());
-        triviaCreateRequestDto.setHallCode(triviaCreateRequestDto.getHallCode());
+        triviaCreateRequestDto.setCurrencyPool(triviaOpenRequestDto.getCurrencyPool());
+        triviaCreateRequestDto.setHallCode(triviaOpenRequestDto.getHallCode());
         Trivia triviaToSave = triviaUtils.buildDomainFromCreateRequestDto(triviaCreateRequestDto);
         Trivia savedTrivia = create(triviaToSave);
 
@@ -117,7 +117,7 @@ public class TriviaServiceImpl implements TriviaService {
         triviaUserCreateRequestDto.setIdUser(triviaOpenRequestDto.getIdUser());
         triviaUserCreateRequestDto.setIdTrivia(savedTrivia.getIdGame());
         TriviaUser triviaUserToSave = triviaUserUtils.buildDomainFromCreateRequestDto(triviaUserCreateRequestDto);
-        triviaUserService.create(triviaUserToSave);
+        triviaUserRepository.save(triviaUserToSave);
 
         // Set new questions to trivia
         List<Integer> selectedIndexes = new ArrayList<>();
@@ -132,12 +132,37 @@ public class TriviaServiceImpl implements TriviaService {
             triviaQuestionCreateRequestDto.setIdTrivia(savedTrivia.getIdGame());
             triviaQuestionCreateRequestDto.setIdQuestion(questionsForUser.get(selectedIndex).getIdQuestion());
             TriviaQuestion triviaQuestionToSave = triviaQuestionUtils.buildDomainFromCreateRequestDto(triviaQuestionCreateRequestDto);
-            triviaQuestionService.create(triviaQuestionToSave);
+            triviaQuestionRepository.save(triviaQuestionToSave);
         }
         return savedTrivia;
     }
-    // endregion Use Cases External
 
-    // region Use Cases Internal
-    // endregion Use Cases Internal
+    @Override
+    public Trivia joinTrivia(TriviaJoinRequestDto triviaJoinRequestDto) throws IllegalAccessException {
+        Trivia triviaToJoin = triviaRepository.findById(triviaJoinRequestDto.getIdTrivia()).orElse(null);
+        if (triviaToJoin == null) {
+            throw new NoSuchElementException("Trivia to join not found in database");
+        }
+        if (triviaToJoin.getStatus() != GameStatusConstants.WAITING.getValue()) {
+            throw new IllegalStateException("Trivia is not opened anymore");
+        }
+        triviaToJoin.setNumberOfParticipants(triviaToJoin.getNumberOfParticipants() + 1);
+        if (triviaToJoin.getNumberOfParticipants() == NUMBER_OF_PARTICIPANTS) {
+            triviaToJoin.setStatus(GameStatusConstants.STARTED.getValue());
+        }
+        triviaRepository.save(triviaToJoin);
+
+        TriviaUserCreateRequestDto triviaUserCreateRequestDto = new TriviaUserCreateRequestDto();
+        triviaUserCreateRequestDto.setIdTrivia(triviaJoinRequestDto.getIdTrivia());
+        triviaUserCreateRequestDto.setIdUser(triviaJoinRequestDto.getIdUser());
+        TriviaUser triviaUserToCreate = triviaUserUtils.buildDomainFromCreateRequestDto(triviaUserCreateRequestDto);
+        triviaUserRepository.save(triviaUserToCreate);
+        return triviaToJoin;
+    }
+
+    @Override
+    public List<Trivia> findOpenedTrivias() {
+        return triviaRepository.findTriviasByStatus(GameStatusConstants.WAITING.getValue());
+    }
+    // endregion Use Cases
 }

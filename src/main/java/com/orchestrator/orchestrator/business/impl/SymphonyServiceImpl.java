@@ -68,9 +68,6 @@ public class SymphonyServiceImpl implements SymphonyService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
-    // endregion Use Cases External
-
-    // region Use Cases Internal
-    // endregion Use Cases Internal
+    // region Use Cases
+    // endregion Use Cases
 }

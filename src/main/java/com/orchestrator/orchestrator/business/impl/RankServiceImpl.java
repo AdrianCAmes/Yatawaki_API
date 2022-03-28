@@ -68,13 +68,6 @@ public class RankServiceImpl implements RankService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
-    // endregion Use Cases External
-
-    // region Use Cases Internal
-    @Override
-    public Rank findByLevel(Integer level) {
-        return rankRepository.findByLevel(level);
-    }
-    // endregion Use Cases Internal
+    // region Use Cases
+    // endregion Use Cases
 }

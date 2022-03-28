@@ -2,10 +2,7 @@ package com.orchestrator.orchestrator.expose;
 
 import com.orchestrator.orchestrator.business.TriviaService;
 import com.orchestrator.orchestrator.model.Trivia;
-import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaChangeRequestDto;
-import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaCreateRequestDto;
-import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaOpenRequestDto;
-import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaUpdateRequestDto;
+import com.orchestrator.orchestrator.model.dto.trivia.request.*;
 import com.orchestrator.orchestrator.utils.TriviaUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -120,16 +117,27 @@ public class TriviaController {
         }
     }
 
+    @PostMapping("/join")
+    public ResponseEntity<Object> joinTrivia(@RequestBody TriviaJoinRequestDto triviaJoinRequestDto) {
+        log.info("Post operation in /trivia-user/join");
+        try {
+            Trivia savedTriviaUser = triviaService.joinTrivia(triviaJoinRequestDto);
+            return new ResponseEntity<>(savedTriviaUser, HttpStatus.OK);
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IllegalStateException iee) {
+            return new ResponseEntity<>("Error occurred with trivia: " + iee.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/opened-trivias")
     public ResponseEntity<Object> findOpenedTrivias(){
         log.info("Get operation in /trivia/opened-trivias");
         try {
-            List<Trivia> retrievedTrivias = triviaService.findAll();
-            if (!retrievedTrivias.isEmpty()) {
-                return new ResponseEntity<>(retrievedTrivias, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Trivias not found", HttpStatus.NOT_FOUND);
-            }
+            List<Trivia> openedTrivias = triviaService.findOpenedTrivias();
+            return new ResponseEntity<>(openedTrivias, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

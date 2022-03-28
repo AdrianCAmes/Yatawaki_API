@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class GestureServiceImpl implements GestureService {
-    // Own repository
+    // Self repository
     private final GestureRepository gestureRepository;
     // Utils
     private final GeneralUtils generalUtils;
@@ -68,9 +68,6 @@ public class GestureServiceImpl implements GestureService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases External
-    // endregion Use Cases External
-
-    // region Use Cases Internal
-    // endregion Use Cases Internal
+    // region Use Cases
+    // endregion Use Cases
 }
