@@ -4,8 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum UserUnlockableStatusConstants {
-    BLOCKED(0),
-    ACTIVE(1);
+    DELETED(0),
+    ACTIVE(1),
+    IN_USE(2);
 
     Integer value;
 

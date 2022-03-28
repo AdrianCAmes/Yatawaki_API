@@ -26,7 +26,7 @@ public class TriviaQuestionUtilsImpl implements TriviaQuestionUtils {
         TriviaQuestion triviaQuestion = new TriviaQuestion();
         triviaQuestion.setTrivia(trivia);
         triviaQuestion.setQuestion(question);
-        triviaQuestion.setStatus(TriviaQuestionStatusConstants.ACTIVE.getValue());
+        triviaQuestion.setStatus(TriviaQuestionStatusConstants.PENDING.getValue());
         generalUtils.mapFields(triviaQuestionCreateRequestDto, triviaQuestion);
         return triviaQuestion;
     }

@@ -4,8 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum GameStatusConstants {
-    BLOCKED(0),
-    ACTIVE(1);
+    DELETED(0),
+    WAITING(1),
+    STARTED(2),
+    CANCELED(3),
+    FINISHED(4);
 
     Integer value;
 

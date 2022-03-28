@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "[Trivia]", schema = "[Orchestrator]")
 @Data
 public class Trivia extends Game {
-    private String hallId;
+    private String hallCode;
     private Integer numberOfParticipants;
     private Integer currencyPool;
 }

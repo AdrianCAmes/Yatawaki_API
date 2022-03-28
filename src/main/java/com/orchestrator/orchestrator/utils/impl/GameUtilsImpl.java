@@ -25,7 +25,7 @@ public class GameUtilsImpl implements GameUtils {
         Game game = new Game();
         game.setSymphony(symphony);
         game.setPlayedDate(LocalDate.now());
-        game.setStatus(GameStatusConstants.ACTIVE.getValue());
+        game.setStatus(GameStatusConstants.STARTED.getValue());
         generalUtils.mapFields(gameCreateRequestDto, game);
         return game;
     }

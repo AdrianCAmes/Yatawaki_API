@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class TriviaUpdateRequestDto extends GameUpdateRequestDto {
-    private String hallId;
+    private String hallCode;
     private Integer numberOfParticipants;
     private Integer currencyPool;
 }

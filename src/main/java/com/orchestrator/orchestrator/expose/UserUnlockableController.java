@@ -1,9 +1,11 @@
 package com.orchestrator.orchestrator.expose;
 
 import com.orchestrator.orchestrator.business.UserUnlockableService;
+import com.orchestrator.orchestrator.model.Unlockable;
 import com.orchestrator.orchestrator.model.UserUnlockable;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableChangeRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableUnlockRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
 import lombok.RequiredArgsConstructor;
@@ -108,5 +110,32 @@ public class UserUnlockableController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/{userId}/symphony")
+    public ResponseEntity<Object> findSymphoniesByUser(@PathVariable("userId") Long userId) {
+        log.info("Get operation in /user-unlockable/{}/symphony", userId);
+        try {
+            List<Unlockable> retrievedUserUnlockables = userUnlockableService.findSymphoniesByUser(userId);
+            if (!retrievedUserUnlockables.isEmpty()) {
+                return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Symphonies not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/unlock")
+    public ResponseEntity<Object> unlockObjects(@RequestBody UserUnlockableUnlockRequestDto userUnlockableUnlockRequestDto) {
+        log.info("Post operation in /user-unlockable/unlock");
+        try {
+            List<Unlockable> unlockedObjects = userUnlockableService.unlockObjectsByUnlocker(userUnlockableUnlockRequestDto);
+            return new ResponseEntity<>(unlockedObjects, HttpStatus.OK);
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

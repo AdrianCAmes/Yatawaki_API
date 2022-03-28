@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum UserStatisticsStatusConstants {
-    BLOCKED(0),
+    DELETED(0),
     ACTIVE(1);
 
     Integer value;

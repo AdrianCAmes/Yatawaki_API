@@ -12,7 +12,9 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class AchievementServiceImpl implements AchievementService {
+    // Self repository
     private final AchievementRepository achievementRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -65,6 +67,9 @@ public class AchievementServiceImpl implements AchievementService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases
-    // endregion Use Cases
+    // region Use Cases External
+    // endregion Use Cases External
+
+    // region Use Cases Internal
+    // endregion Use Cases Internal
 }

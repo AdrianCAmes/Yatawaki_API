@@ -13,7 +13,9 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class InstrumentServiceImpl implements InstrumentService {
+    // Self repository
     private final InstrumentRepository instrumentRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -66,6 +68,9 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases
-    // endregion Use Cases
+    // region Use Cases External
+    // endregion Use Cases External
+
+    // region Use Cases Internal
+    // endregion Use Cases Internal
 }

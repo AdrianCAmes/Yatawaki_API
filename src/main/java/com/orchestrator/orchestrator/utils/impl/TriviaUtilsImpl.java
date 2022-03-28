@@ -27,7 +27,7 @@ public class TriviaUtilsImpl implements TriviaUtils {
         trivia.setSymphony(symphony);
         trivia.setPlayedDate(LocalDate.now());
         trivia.setNumberOfParticipants(NumericConstants.ONE.getValue());
-        trivia.setStatus(GameStatusConstants.ACTIVE.getValue());
+        trivia.setStatus(GameStatusConstants.WAITING.getValue());
         generalUtils.mapFields(triviaCreateRequestDto, trivia);
         return trivia;
     }

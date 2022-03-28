@@ -13,7 +13,9 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class RankServiceImpl implements RankService {
+    // Self repository
     private final RankRepository rankRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -66,10 +68,13 @@ public class RankServiceImpl implements RankService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases
+    // region Use Cases External
+    // endregion Use Cases External
+
+    // region Use Cases Internal
     @Override
-    public Rank findByName(String name) {
-        return rankRepository.findByName(name);
+    public Rank findByLevel(Integer level) {
+        return rankRepository.findByLevel(level);
     }
-    // endregion Use Cases
+    // endregion Use Cases Internal
 }

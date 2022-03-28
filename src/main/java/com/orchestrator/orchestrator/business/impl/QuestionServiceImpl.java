@@ -13,7 +13,9 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
+    // Self repository
     private final QuestionRepository questionRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -66,6 +68,13 @@ public class QuestionServiceImpl implements QuestionService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases
-    // endregion Use Cases
+    // region Use Cases External
+    // endregion Use Cases External
+
+    // region Use Cases Internal
+    @Override
+    public List<Question> findByLevelLessOrEqualThan(Integer level) {
+        return questionRepository.findByLevelLessOrEqualThan(level);
+    }
+    // endregion Use Cases Internal
 }

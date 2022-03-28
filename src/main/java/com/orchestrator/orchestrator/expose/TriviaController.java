@@ -4,6 +4,7 @@ import com.orchestrator.orchestrator.business.TriviaService;
 import com.orchestrator.orchestrator.model.Trivia;
 import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaChangeRequestDto;
 import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaOpenRequestDto;
 import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.TriviaUtils;
 import lombok.RequiredArgsConstructor;
@@ -108,5 +109,15 @@ public class TriviaController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @PostMapping("/open")
+    public ResponseEntity<Object> openTrivia(@RequestBody TriviaOpenRequestDto triviaOpenRequestDto) {
+        log.info("Post operation in /trivia/open");
+        try {
+            Trivia savedTrivia = triviaService.openTrivia(triviaOpenRequestDto);
+            return new ResponseEntity<>(savedTrivia, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

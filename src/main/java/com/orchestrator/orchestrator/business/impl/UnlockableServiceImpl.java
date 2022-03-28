@@ -13,7 +13,9 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class UnlockableServiceImpl implements UnlockableService {
+    // Self repository
     private final UnlockableRepository unlockableRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -66,10 +68,13 @@ public class UnlockableServiceImpl implements UnlockableService {
     }
     // endregion CRUD Operations
 
-    // region Use Cases
+    // region Use Cases External
+    // endregion Use Cases External
+
+    // region Use Cases Internal
     @Override
     public List<Unlockable> findByUnlockerTypeAndUnlockerValue(String unlockerType, Integer unlockerValue) {
         return unlockableRepository.findByUnlockerTypeAndUnlockerValue(unlockerType, unlockerValue);
     }
-    // endregion Use Cases
+    // endregion Use Cases Internal
 }
