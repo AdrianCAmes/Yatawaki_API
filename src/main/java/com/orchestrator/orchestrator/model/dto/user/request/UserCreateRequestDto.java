@@ -13,4 +13,5 @@ public class UserCreateRequestDto {
     private String lastname;
     private String mail;
     private LocalDate birthDate;
+    private String role;
 }

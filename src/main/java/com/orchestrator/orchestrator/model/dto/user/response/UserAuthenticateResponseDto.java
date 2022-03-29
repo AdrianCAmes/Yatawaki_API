@@ -6,5 +6,4 @@ import lombok.Data;
 public class UserAuthenticateResponseDto {
     Boolean isAuthenticated;
     String jwt;
-    Integer role;
 }

@@ -4,6 +4,7 @@ import com.orchestrator.orchestrator.model.User;
 import com.orchestrator.orchestrator.model.UserStatistics;
 import com.orchestrator.orchestrator.model.dto.user.request.UserChangeRequestDto;
 import com.orchestrator.orchestrator.model.dto.user.request.UserCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.user.request.UserRegisterRequestDto;
 import com.orchestrator.orchestrator.model.dto.user.request.UserUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
 import com.orchestrator.orchestrator.utils.UserUtils;
@@ -50,6 +51,15 @@ public class UserUtilsImpl implements UserUtils {
     }
 
     @Override
+    public User buildDomainFromRegisterRequestDto(UserRegisterRequestDto userRegisterRequestDto) throws IllegalAccessException {
+        User user = new User();
+        user.setCurrencyOwned(NumericConstants.ZERO.getValue());
+        user.setStatus(UserStatusConstants.ACTIVE.getValue());
+        generalUtils.mapFields(userRegisterRequestDto, user);
+        return user;
+    }
+
+    @Override
     public UserCreateRequestDto buildCreateRequestDtoFromDomain(User user) throws IllegalAccessException {
         UserCreateRequestDto userCreateRequestDto = new UserCreateRequestDto();
         userCreateRequestDto.setIdUserStatistics(user.getUserStatistics().getIdUserStatistics());
@@ -71,5 +81,12 @@ public class UserUtilsImpl implements UserUtils {
         userChangeRequestDto.setIdUserStatistics(user.getUserStatistics().getIdUserStatistics());
         generalUtils.mapFields(user, userChangeRequestDto);
         return userChangeRequestDto;
+    }
+
+    @Override
+    public UserRegisterRequestDto buildRegisterRequestDtoFromDomain(User user) throws IllegalAccessException {
+        UserRegisterRequestDto userRegisterRequestDto = new UserRegisterRequestDto();
+        generalUtils.mapFields(user, userRegisterRequestDto);
+        return userRegisterRequestDto;
     }
 }

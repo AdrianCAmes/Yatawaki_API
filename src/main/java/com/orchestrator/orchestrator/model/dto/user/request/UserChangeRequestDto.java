@@ -16,4 +16,5 @@ public class UserChangeRequestDto {
     private LocalDate birthDate;
     private Integer currencyOwned;
     private Integer status;
+    private String role;
 }

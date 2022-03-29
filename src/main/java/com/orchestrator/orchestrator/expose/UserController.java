@@ -2,10 +2,7 @@ package com.orchestrator.orchestrator.expose;
 
 import com.orchestrator.orchestrator.business.UserService;
 import com.orchestrator.orchestrator.model.User;
-import com.orchestrator.orchestrator.model.dto.user.request.UserAuthenticateRequestDto;
-import com.orchestrator.orchestrator.model.dto.user.request.UserChangeRequestDto;
-import com.orchestrator.orchestrator.model.dto.user.request.UserCreateRequestDto;
-import com.orchestrator.orchestrator.model.dto.user.request.UserUpdateRequestDto;
+import com.orchestrator.orchestrator.model.dto.user.request.*;
 import com.orchestrator.orchestrator.model.dto.user.response.UserAuthenticateResponseDto;
 import com.orchestrator.orchestrator.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -111,25 +108,14 @@ public class UserController {
 
     // region Use Cases
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody UserCreateRequestDto userCreateRequestDto) {
+    public ResponseEntity<Object> register(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
         log.info("Post operation in /user/register");
         try {
-            User userToSave = userUtils.buildDomainFromCreateRequestDto(userCreateRequestDto);
-            User registeredUser = userService.register(userToSave);
+            User userToRegister = userUtils.buildDomainFromRegisterRequestDto(userRegisterRequestDto);
+            User registeredUser = userService.register(userToRegister);
             return new ResponseEntity<>(registeredUser, HttpStatus.OK);
         } catch (IllegalAccessException iae) {
             return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PostMapping("/authenticate")
-    public ResponseEntity<Object> authenticate(@RequestBody UserAuthenticateRequestDto userAuthenticateRequestDto) {
-        log.info("Post operation in /user/authenticate");
-        try {
-            UserAuthenticateResponseDto authenticatedUser = userService.authenticate(userAuthenticateRequestDto);
-            return new ResponseEntity<>(authenticatedUser, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
