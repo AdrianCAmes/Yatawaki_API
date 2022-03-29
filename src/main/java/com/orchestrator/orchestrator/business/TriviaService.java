@@ -3,7 +3,6 @@ package com.orchestrator.orchestrator.business;
 import com.orchestrator.orchestrator.model.Trivia;
 import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaJoinRequestDto;
 import com.orchestrator.orchestrator.model.dto.trivia.request.TriviaOpenRequestDto;
-import com.orchestrator.orchestrator.model.dto.triviauser.request.TriviaUserCreateRequestDto;
 
 import java.util.List;
 

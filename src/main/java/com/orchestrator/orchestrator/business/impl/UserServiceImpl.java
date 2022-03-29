@@ -2,8 +2,6 @@ package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.UserService;
 import com.orchestrator.orchestrator.model.*;
-import com.orchestrator.orchestrator.model.dto.user.request.UserAuthenticateRequestDto;
-import com.orchestrator.orchestrator.model.dto.user.response.UserAuthenticateResponseDto;
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
@@ -15,11 +13,10 @@ import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
 import com.orchestrator.orchestrator.utils.constants.NumericConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,11 +34,14 @@ public class UserServiceImpl implements UserService {
     private final UserRankRepository userRankRepository;
     private final UnlockableRepository unlockableRepository;
     private final UserUnlockableRepository userUnlockableRepository;
+    // Security
+    private final PasswordEncoder passwordEncoder;
 
     // region CRUD Operations
     @Override
     public User create(User user) {
         if (user.getIdUser() != null) throw new IllegalArgumentException("Body should not contain id");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
     public User change(User user) {
         User userToChange = findById(user.getIdUser());
         if (userToChange != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         } else {
             throw new NoSuchElementException("Element does not exist in database");
@@ -69,6 +70,7 @@ public class UserServiceImpl implements UserService {
     public User update(User user) throws IllegalAccessException {
         User userToUpdate = findById(user.getIdUser());
         if (userToUpdate != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             generalUtils.mapFields(user, userToUpdate);
             return userRepository.save(userToUpdate);
         } else {
@@ -116,20 +118,6 @@ public class UserServiceImpl implements UserService {
             userUnlockableRepository.save(userUnlockableToSave);
         }
         return createdUser;
-    }
-
-    @Override
-    public UserAuthenticateResponseDto authenticate(UserAuthenticateRequestDto userAuthenticateRequestDto) {
-        Optional<User> retrievedUser = userRepository.findByUniqueIdentifierAndPassword(userAuthenticateRequestDto.getUniqueIdentifier(), userAuthenticateRequestDto.getPassword());
-        UserAuthenticateResponseDto userAuthenticateResponseDto = new UserAuthenticateResponseDto();
-        if (retrievedUser.isPresent()) {
-            userAuthenticateResponseDto.setIsAuthenticated(Boolean.TRUE);
-            userAuthenticateResponseDto.setJwt("Complete with implementation");
-        } else {
-            userAuthenticateResponseDto.setIsAuthenticated(Boolean.FALSE);
-            userAuthenticateResponseDto.setJwt(null);
-        }
-        return userAuthenticateResponseDto;
     }
     // endregion Use Cases
 }

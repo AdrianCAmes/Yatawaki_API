@@ -25,4 +25,6 @@ public class User {
     private LocalDate birthDate;
     private Integer currencyOwned;
     private Integer status;
+    private String role;
+
 }
