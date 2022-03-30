@@ -45,17 +45,20 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setExposedHeaders(List.of("Authorization"));
 
-        String loginUrl = "/api/v1/authenticate";
+        String[] publicUrls = {"/api/v1/authenticate", "/api/v1/user/register"};
+        String[] adminUrls = {"api/v1/**"};
+        String[] playerUrls = {"api/v1/trivia/opened-trivias"};
 
         http.cors().configurationSource(request -> corsConfiguration)
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(loginUrl, "/api/v1/user/register").permitAll()
-                .antMatchers("/api/v1/user/**").hasAnyAuthority(UserRoleConstants.PLAYER.name(), UserRoleConstants.ADMIN.name())
+                .antMatchers(publicUrls).permitAll()
+                .antMatchers(adminUrls).hasAnyAuthority(UserRoleConstants.ADMIN.name())
+                .antMatchers(playerUrls).hasAnyAuthority(UserRoleConstants.PLAYER.name())
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new LoginFilter(loginUrl, authenticationManagerBean()), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(loginUrl), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new LoginFilter(publicUrls[0], authenticationManagerBean()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(publicUrls), UsernamePasswordAuthenticationFilter.class);
     }
 }

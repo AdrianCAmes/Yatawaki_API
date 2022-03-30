@@ -39,7 +39,7 @@ public class JwtUtil {
     public static Authentication getAuthenticationFromRequest() {
         String username = getSubjectFromRequest();
         List<String> roles = getRolesFromRequest();
-        if (!username.isBlank() && roles != null && !roles.isEmpty()) {
+        if (username != null && !username.isEmpty() && roles != null && !roles.isEmpty()) {
             return new UsernamePasswordAuthenticationToken(username, null, roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
         }
         return null;
