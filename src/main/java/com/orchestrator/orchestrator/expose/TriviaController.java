@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/trivia")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class TriviaController {
     private final TriviaService triviaService;
     private final TriviaUtils triviaUtils;
@@ -107,6 +109,7 @@ public class TriviaController {
 
     // region Use Cases
     @PostMapping("/open")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> openTrivia(@RequestBody TriviaOpenRequestDto triviaOpenRequestDto) {
         log.info("Post operation in /trivia/open");
         try {
@@ -119,7 +122,7 @@ public class TriviaController {
 
     @PostMapping("/join")
     public ResponseEntity<Object> joinTrivia(@RequestBody TriviaJoinRequestDto triviaJoinRequestDto) {
-        log.info("Post operation in /trivia-user/join");
+        log.info("Post operation in /trivia/join");
         try {
             Trivia savedTriviaUser = triviaService.joinTrivia(triviaJoinRequestDto);
             return new ResponseEntity<>(savedTriviaUser, HttpStatus.OK);
@@ -131,6 +134,21 @@ public class TriviaController {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /*@PostMapping("/finish")
+    public ResponseEntity<Object> finishTrivia(@RequestBody TriviaJoinRequestDto triviaJoinRequestDto) {
+        log.info("Post operation in /trivia-user/finish");
+        try {
+            Trivia savedTriviaUser = triviaService.finishTrivia(triviaJoinRequestDto);
+            return new ResponseEntity<>(savedTriviaUser, HttpStatus.OK);
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IllegalStateException iee) {
+            return new ResponseEntity<>("Error occurred with trivia: " + iee.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }*/
 
     @GetMapping("/opened-trivias")
     public ResponseEntity<Object> findOpenedTrivias(){

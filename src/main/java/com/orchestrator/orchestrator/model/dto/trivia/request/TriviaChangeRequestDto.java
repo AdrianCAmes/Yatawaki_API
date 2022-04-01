@@ -7,5 +7,5 @@ import lombok.Data;
 public class TriviaChangeRequestDto extends GameChangeRequestDto {
     private String hallCode;
     private Integer numberOfParticipants;
-    private Integer currencyPool;
+    private Integer notesPool;
 }

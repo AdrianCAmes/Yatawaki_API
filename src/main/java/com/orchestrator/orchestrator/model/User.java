@@ -23,7 +23,8 @@ public class User {
     @Column(unique = true)
     private String mail;
     private LocalDate birthDate;
-    private Integer currencyOwned;
+    private Integer coinsOwned;
+    private Integer notesOwned;
     private Integer status;
     private String role;
 

@@ -22,6 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = retrievedUser.get();
         org.springframework.security.core.userdetails.User.UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(username);
         builder.password(user.getPassword()).authorities(user.getRole());
-        return builder.build();
+        UserDetails u = builder.build();
+        return u;
     }
 }

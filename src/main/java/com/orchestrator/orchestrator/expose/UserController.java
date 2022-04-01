@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/user")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class UserController {
     private final UserService userService;
     private final UserUtils userUtils;
@@ -37,6 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> findUserById(@PathVariable("id") Long id) {
         log.info("Get operation in /user/{}", id);
         try {
@@ -67,6 +70,7 @@ public class UserController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> changeUser(@RequestBody UserChangeRequestDto userChangeRequestDto) {
         log.info("Put operation in /user");
         try {
@@ -81,6 +85,7 @@ public class UserController {
     }
 
     @PatchMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Object> updateUser(@RequestBody UserUpdateRequestDto userUpdateRequestDto) {
         log.info("Patch operation in /user");
         try {
@@ -108,6 +113,7 @@ public class UserController {
 
     // region Use Cases
     @PostMapping("/register")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Object> register(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
         log.info("Post operation in /user/register");
         try {

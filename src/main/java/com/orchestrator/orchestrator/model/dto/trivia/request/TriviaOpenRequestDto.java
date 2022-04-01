@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class TriviaOpenRequestDto extends GameOpenRequestDto {
     private String hallCode;
-    private Integer currencyPool;
+    private Integer notesPool;
     private Long idUser;
 }
