@@ -1,25 +1,26 @@
 package com.orchestrator.orchestrator.configuration;
 
-import com.orchestrator.orchestrator.utils.constants.UserRoleConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
@@ -45,20 +46,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setExposedHeaders(List.of("Authorization"));
 
-        String[] publicUrls = {"/api/v1/authenticate", "/api/v1/user/register"};
-        String[] adminUrls = {"api/v1/**"};
-        String[] playerUrls = {"api/v1/trivia/opened-trivias"};
+        String[] publicUrls = {"/api/v1/authenticate", "/api/v1/user/register", "/api/v1/user"};
 
-        http.cors().configurationSource(request -> corsConfiguration)
-                .and()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(publicUrls).permitAll()
-                .antMatchers(adminUrls).hasAnyAuthority(UserRoleConstants.ADMIN.name())
-                .antMatchers(playerUrls).hasAnyAuthority(UserRoleConstants.PLAYER.name())
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(new LoginFilter(publicUrls[0], authenticationManagerBean()), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(publicUrls), UsernamePasswordAuthenticationFilter.class);
+        http.cors().configurationSource(request -> corsConfiguration);
+        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.authorizeRequests().antMatchers(publicUrls).permitAll();
+        http.addFilterBefore(new LoginFilter(publicUrls[0], authenticationManagerBean()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(publicUrls), UsernamePasswordAuthenticationFilter.class);
+        http.authorizeRequests().anyRequest().authenticated();
     }
 }

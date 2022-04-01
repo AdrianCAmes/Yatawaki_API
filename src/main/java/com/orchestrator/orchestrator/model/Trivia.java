@@ -10,5 +10,5 @@ import javax.persistence.*;
 public class Trivia extends Game {
     private String hallCode;
     private Integer numberOfParticipants;
-    private Integer currencyPool;
+    private Integer notesPool;
 }

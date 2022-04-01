@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/user-unlockable")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class UserUnlockableController {
     private final UserUnlockableService userUnlockableService;
     private final UserUnlockableUtils userUnlockableUtils;
@@ -110,7 +112,8 @@ public class UserUnlockableController {
     // endregion CRUD Operations
 
     // region Use Cases
-    @GetMapping("/{userId}/symphony")
+    @GetMapping("/user/{userId}/symphonies")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> findSymphoniesByUser(@PathVariable("userId") Long userId) {
         log.info("Get operation in /user-unlockable/{}/symphony", userId);
         try {

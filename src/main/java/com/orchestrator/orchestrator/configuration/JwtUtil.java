@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class JwtUtil {
     private static String secretToken = "SecretOrchestrator";
-    private static final Long TOKEN_VALIDITY = 1000 * 60 * 60 * Long.valueOf(10);
+    private static final Long TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * Long.valueOf(200);
     private static final String CLAIM_AUTHORITIES = "authorities";
     private static final String HEADER = "Authorization";
     private static final String PREFIX = "Bearer ";

@@ -93,7 +93,7 @@ public class TriviaServiceImpl implements TriviaService {
     // region Use Cases
     @Override
     public Trivia openTrivia(TriviaOpenRequestDto triviaOpenRequestDto) throws IllegalAccessException {
-        // Find user that created the trivia
+        // Find rank of the user that created the trivia
         UserRank activeUserRank = userRankRepository.findLastActiveByUser(triviaOpenRequestDto.getIdUser()).orElse(null);
         if (activeUserRank == null) {
             throw new NoSuchElementException("Creator user does not have an active rank");
@@ -107,12 +107,12 @@ public class TriviaServiceImpl implements TriviaService {
         // Create new trivia
         TriviaCreateRequestDto triviaCreateRequestDto = new TriviaCreateRequestDto();
         triviaCreateRequestDto.setIdSymphony(triviaOpenRequestDto.getIdSymphony());
-        triviaCreateRequestDto.setCurrencyPool(triviaOpenRequestDto.getCurrencyPool());
+        triviaCreateRequestDto.setNotesPool(triviaOpenRequestDto.getNotesPool());
         triviaCreateRequestDto.setHallCode(triviaOpenRequestDto.getHallCode());
         Trivia triviaToSave = triviaUtils.buildDomainFromCreateRequestDto(triviaCreateRequestDto);
         Trivia savedTrivia = create(triviaToSave);
 
-        // Create new trivia user
+        // Join creator to trivia
         TriviaUserCreateRequestDto triviaUserCreateRequestDto = new TriviaUserCreateRequestDto();
         triviaUserCreateRequestDto.setIdUser(triviaOpenRequestDto.getIdUser());
         triviaUserCreateRequestDto.setIdTrivia(savedTrivia.getIdGame());

@@ -24,7 +24,8 @@ public class UserUtilsImpl implements UserUtils {
         userStatistics.setIdUserStatistics(userCreateRequestDto.getIdUserStatistics());
         User user = new User();
         user.setUserStatistics(userStatistics);
-        user.setCurrencyOwned(NumericConstants.ZERO.getValue());
+        user.setCoinsOwned(NumericConstants.ZERO.getValue());
+        user.setNotesOwned(NumericConstants.ZERO.getValue());
         user.setStatus(UserStatusConstants.ACTIVE.getValue());
         generalUtils.mapFields(userCreateRequestDto, user);
         return user;
@@ -53,7 +54,8 @@ public class UserUtilsImpl implements UserUtils {
     @Override
     public User buildDomainFromRegisterRequestDto(UserRegisterRequestDto userRegisterRequestDto) throws IllegalAccessException {
         User user = new User();
-        user.setCurrencyOwned(NumericConstants.ZERO.getValue());
+        user.setCoinsOwned(NumericConstants.ZERO.getValue());
+        user.setNotesOwned(NumericConstants.ZERO.getValue());
         user.setStatus(UserStatusConstants.ACTIVE.getValue());
         generalUtils.mapFields(userRegisterRequestDto, user);
         return user;
