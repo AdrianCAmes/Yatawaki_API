@@ -1,6 +1,7 @@
 package com.orchestrator.orchestrator.expose;
 
 import com.orchestrator.orchestrator.business.SymphonyInstrumentService;
+import com.orchestrator.orchestrator.model.Instrument;
 import com.orchestrator.orchestrator.model.SymphonyInstrument;
 import com.orchestrator.orchestrator.model.dto.symphonyinstrument.request.SymphonyInstrumentChangeRequestDto;
 import com.orchestrator.orchestrator.model.dto.symphonyinstrument.request.SymphonyInstrumentCreateRequestDto;
@@ -110,5 +111,16 @@ public class SymphonyInstrumentController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/symphony/{idSymphony}/instruments")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findInstrumentsBySymphony(@PathVariable("idSymphony") Long idSymphony) {
+        log.info("Get operation in /symphony-instrument/{}/instruments", idSymphony);
+        try {
+            List<Instrument> retrievedInstruments = symphonyInstrumentService.findInstrumentsBySymphony(idSymphony);
+            return new ResponseEntity<>(retrievedInstruments, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

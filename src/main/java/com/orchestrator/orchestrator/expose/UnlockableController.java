@@ -116,7 +116,7 @@ public class UnlockableController {
     // region Use Cases
     @PostMapping("/{id}/image-upload")
     public ResponseEntity<Object> uploadImage(@PathVariable("id") Long id, @RequestParam MultipartFile icon) {
-        log.info("Delete operation in /unlockable/{}", id);
+        log.info("Delete operation in /unlockable/{}/image-upload", id);
         try {
             Unlockable unlockableToUpdate = unlockableService.findById(id);
             if (unlockableToUpdate != null) {
@@ -134,8 +134,9 @@ public class UnlockableController {
 
     }
 
-    @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_JPEG_VALUE)
     Resource downloadImage(@PathVariable Long id) {
+        log.info("Delete operation in /unlockable/{}/image", id);
         byte[] image = unlockableService.findById(id).getIcon();
         return new ByteArrayResource(image);
     }
