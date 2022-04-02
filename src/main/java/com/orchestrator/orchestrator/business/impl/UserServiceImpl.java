@@ -2,6 +2,7 @@ package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.UserService;
 import com.orchestrator.orchestrator.model.*;
+import com.orchestrator.orchestrator.model.dto.user.response.UserResumeResponseDto;
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
@@ -12,11 +13,13 @@ import com.orchestrator.orchestrator.utils.UserStatisticsUtils;
 import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
 import com.orchestrator.orchestrator.utils.constants.NumericConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
+import com.orchestrator.orchestrator.utils.constants.UserUnlockableStatusConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +73,7 @@ public class UserServiceImpl implements UserService {
     public User update(User user) throws IllegalAccessException {
         User userToUpdate = findById(user.getIdUser());
         if (userToUpdate != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            if (user.getPassword() != null) user.setPassword(passwordEncoder.encode(user.getPassword()));
             generalUtils.mapFields(user, userToUpdate);
             return userRepository.save(userToUpdate);
         } else {
@@ -115,9 +118,39 @@ public class UserServiceImpl implements UserService {
             userUnlockableCreateRequestDto.setIdUser(createdUser.getIdUser());
             userUnlockableCreateRequestDto.setIdUnlockable(unlockable.getIdUnlockable());
             UserUnlockable userUnlockableToSave = userUnlockableUtils.buildDomainFromCreateRequestDto(userUnlockableCreateRequestDto);
+            if (unlockable instanceof Avatar) {
+                userUnlockableToSave.setStatus(UserUnlockableStatusConstants.IN_USE.getValue());
+            }
             userUnlockableRepository.save(userUnlockableToSave);
         }
         return createdUser;
+    }
+
+    @Override
+    public UserResumeResponseDto findUserResumeByUsername(String username) {
+        User user = userRepository.findByUniqueIdentifier(username).orElse(null);
+        if (user == null) {
+            throw new NoSuchElementException("User does not exist in database");
+        }
+
+        UserRank lastActiveRank = userRankRepository.findLastActiveByUser(user.getIdUser()).orElse(null);
+        if (lastActiveRank == null) {
+            throw new NoSuchElementException("Active rank not found for user");
+        }
+
+        Optional<Unlockable> optionalAvatar = userUnlockableRepository.findInUseAvatarByUser(user.getIdUser());
+        if (optionalAvatar.isEmpty()) {
+            throw new NoSuchElementException("Avatar not found for user");
+        }
+
+        UserResumeResponseDto userResume = new UserResumeResponseDto();
+        userResume.setId(user.getIdUser());
+        userResume.setCoinsOwned(user.getCoinsOwned());
+        userResume.setNotesOwned(user.getNotesOwned());
+        userResume.setLevel(lastActiveRank.getRank().getLevel());
+        userResume.setCurrentExperience(lastActiveRank.getCurrentExperience());
+        userResume.setIcon(optionalAvatar.get().getIcon());
+        return userResume;
     }
     // endregion Use Cases
 }

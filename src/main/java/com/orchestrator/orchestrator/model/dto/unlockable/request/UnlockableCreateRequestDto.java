@@ -11,5 +11,4 @@ public class UnlockableCreateRequestDto {
     private Integer unlockerValue;
     private Integer coinsCost;
     private Integer notesCost;
-    private byte[] icon;
 }
