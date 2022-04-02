@@ -8,10 +8,14 @@ import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableUpda
 import com.orchestrator.orchestrator.utils.UnlockableUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -110,5 +114,30 @@ public class UnlockableController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @PostMapping("/{id}/image-upload")
+    public ResponseEntity<Object> uploadImage(@PathVariable("id") Long id, @RequestParam MultipartFile icon) {
+        log.info("Delete operation in /unlockable/{}", id);
+        try {
+            Unlockable unlockableToUpdate = unlockableService.findById(id);
+            if (unlockableToUpdate != null) {
+                unlockableToUpdate.setIcon(icon.getBytes());
+                Unlockable updatedUnlockable = unlockableService.update(unlockableToUpdate);
+                return new ResponseEntity<>(updatedUnlockable, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Unlockable not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    Resource downloadImage(@PathVariable Long id) {
+        byte[] image = unlockableService.findById(id).getIcon();
+        return new ByteArrayResource(image);
+    }
     // endregion Use Cases
 }

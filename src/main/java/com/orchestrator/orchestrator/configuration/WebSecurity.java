@@ -1,5 +1,7 @@
 package com.orchestrator.orchestrator.configuration;
 
+import com.orchestrator.orchestrator.business.UserService;
+import com.orchestrator.orchestrator.business.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,7 +48,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setExposedHeaders(List.of("Authorization"));
 
-        String[] publicUrls = {"/api/v1/authenticate", "/api/v1/user/register", "/api/v1/user"};
+        String[] publicUrls = {"/api/v1/authenticate", "/api/v1/user/register"};
 
         http.cors().configurationSource(request -> corsConfiguration);
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

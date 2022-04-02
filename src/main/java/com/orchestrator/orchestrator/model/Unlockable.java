@@ -19,6 +19,7 @@ public class Unlockable {
     private Integer unlockerValue;
     private Integer coinsCost;
     private Integer notesCost;
+    @Lob
     private byte[] icon;
     private Integer status;
 }

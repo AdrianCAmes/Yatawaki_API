@@ -12,6 +12,5 @@ public class UnlockableUpdateRequestDto {
     private Integer unlockerValue;
     private Integer coinsCost;
     private Integer notesCost;
-    private byte[] icon;
     private Integer status;
 }
