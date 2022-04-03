@@ -69,5 +69,9 @@ public class InstrumentServiceImpl implements InstrumentService {
     // endregion CRUD Operations
 
     // region Use Cases
+    @Override
+    public List<Instrument> findInstrumentsByName(String name) {
+        return instrumentRepository.findInstrumentsByName(name);
+    }
     // endregion Use Cases
 }
