@@ -12,7 +12,8 @@ public class Instrument {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idInstrument;
     private String name;
-    private String description;
+    private String longDescription;
+    private String shortDescription;
     private String type;
     private Integer status;
     @Lob

@@ -140,5 +140,17 @@ public class InstrumentController {
         byte[] image = instrumentService.findById(id).getIcon();
         return new ByteArrayResource(image);
     }
+
+    @GetMapping("/name/{name}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findInstrumentsByName(@PathVariable("name") String name){
+        log.info("Get operation in /instrument/name/{}", name);
+        try {
+            List<Instrument> retrievedInstruments = instrumentService.findInstrumentsByName(name);
+            return new ResponseEntity<>(retrievedInstruments, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }
