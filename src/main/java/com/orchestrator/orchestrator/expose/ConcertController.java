@@ -3,8 +3,10 @@ package com.orchestrator.orchestrator.expose;
 import com.orchestrator.orchestrator.business.ConcertService;
 import com.orchestrator.orchestrator.model.Concert;
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertChangeRequestDto;
+import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCompleteRequestDto;
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertUpdateRequestDto;
+import com.orchestrator.orchestrator.model.dto.concert.response.ConcertCompleteResponseDto;
 import com.orchestrator.orchestrator.utils.ConcertUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -110,5 +112,16 @@ public class ConcertController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @PostMapping("/complete")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> completeConcert(@RequestBody ConcertCompleteRequestDto concertCompleteRequestDto) {
+        log.info("Delete operation in /concert/complete");
+        try {
+            ConcertCompleteResponseDto concert = concertService.complete(concertCompleteRequestDto);
+            return new ResponseEntity<>(concert, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

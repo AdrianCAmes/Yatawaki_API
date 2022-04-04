@@ -5,6 +5,7 @@ import com.orchestrator.orchestrator.model.Unlockable;
 import com.orchestrator.orchestrator.model.UserUnlockable;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableUnlockRequestDto;
+import com.orchestrator.orchestrator.model.dto.userunlockable.response.UserUnlockableFilteredResponseDto;
 import com.orchestrator.orchestrator.repository.UnlockableRepository;
 import com.orchestrator.orchestrator.repository.UserUnlockableRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
@@ -79,23 +80,27 @@ public class UserUnlockableServiceImpl implements UserUnlockableService {
 
     // region Use Cases
     @Override
-    public List<Unlockable> findSymphoniesByUser(Long idUser) {
-        return userUnlockableRepository.findSymphoniesByUser(idUser);
+    public UserUnlockableFilteredResponseDto findFilteredUnlockablesByUserId(Long idUser) {
+        List<Unlockable> achievements = userUnlockableRepository.findAchievementsByUserId(idUser);
+        List<Unlockable> symphonies = userUnlockableRepository.findSymphoniesByUserId(idUser);
+        List<Unlockable> avatars = userUnlockableRepository.findAvatarsByUserId(idUser);
+
+        UserUnlockableFilteredResponseDto userUnlockableFilteredResponseDto = new UserUnlockableFilteredResponseDto();
+        userUnlockableFilteredResponseDto.setAchievements(achievements);
+        userUnlockableFilteredResponseDto.setSymphonies(symphonies);
+        userUnlockableFilteredResponseDto.setAvatars(avatars);
+
+        return userUnlockableFilteredResponseDto;
     }
 
     @Override
-    public List<Unlockable> findAvatarsByUser(Long idUser) {
-        return userUnlockableRepository.findAvatarsByUser(idUser);
-    }
-
-    @Override
-    public List<Unlockable> findAchievementsByUser(Long idUser) {
-        return userUnlockableRepository.findAchievementsByUser(idUser);
+    public List<Unlockable> findAvatarsByUserId(Long idUser) {
+        return userUnlockableRepository.findAvatarsByUserId(idUser);
     }
 
     @Override
     public List<Unlockable> unlockObjectsByUnlocker(UserUnlockableUnlockRequestDto userUnlockableUnlockRequestDto) throws IllegalAccessException {
-        List<Long> ownedUnlockables = userUnlockableRepository.findUnlockablesByUser(userUnlockableUnlockRequestDto.getIdUser()).stream().map(Unlockable::getIdUnlockable).collect(Collectors.toList());
+        List<Long> ownedUnlockables = userUnlockableRepository.findUnlockablesByUserId(userUnlockableUnlockRequestDto.getIdUser()).stream().map(Unlockable::getIdUnlockable).collect(Collectors.toList());
         List<Unlockable> objectsToUnlock = unlockableRepository.findByUnlockerTypeAndUnlockerValue(userUnlockableUnlockRequestDto.getUnlockerType(), userUnlockableUnlockRequestDto.getUnlockerValue()).stream()
                 .filter(object -> !ownedUnlockables.contains(object.getIdUnlockable()))
                 .collect(Collectors.toList());

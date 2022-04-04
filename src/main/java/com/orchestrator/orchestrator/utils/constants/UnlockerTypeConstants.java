@@ -4,7 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum UnlockerTypeConstants {
-    RANK("Rank");
+    RANK("Rank"),
+    POINTS("Points"),
+    CONCERTS("Concerts"),
+    ACCURACY("Accuracy");
 
     String name;
 
