@@ -7,6 +7,7 @@ import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlock
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableUnlockRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableUpdateRequestDto;
+import com.orchestrator.orchestrator.model.dto.userunlockable.response.UserUnlockableFilteredResponseDto;
 import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -112,17 +113,25 @@ public class UserUnlockableController {
     // endregion CRUD Operations
 
     // region Use Cases
-    @GetMapping("/user/{userId}/symphonies")
+    @GetMapping("/user/{userId}/filtered")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
-    public ResponseEntity<Object> findSymphoniesByUser(@PathVariable("userId") Long userId) {
-        log.info("Get operation in /user-unlockable/{}/symphony", userId);
+    public ResponseEntity<Object> findFilteredUnlockablesByUserId(@PathVariable("userId") Long userId) {
+        log.info("Get operation in /user-unlockable/user/{}/filtered", userId);
         try {
-            List<Unlockable> retrievedUserUnlockables = userUnlockableService.findSymphoniesByUser(userId);
-            if (!retrievedUserUnlockables.isEmpty()) {
-                return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Symphonies not found", HttpStatus.NOT_FOUND);
-            }
+            UserUnlockableFilteredResponseDto retrievedUserUnlockables = userUnlockableService.findFilteredUnlockablesByUserId(userId);
+            return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/user/{userId}/avatars")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findAvatarsByUserId(@PathVariable("userId") Long userId) {
+        log.info("Get operation in /user-unlockable/user/{}/avatars", userId);
+        try {
+            List<Unlockable> retrievedUserUnlockables = userUnlockableService.findAvatarsByUserId(userId);
+            return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -110,17 +110,5 @@ public class UserRankController {
     // endregion CRUD Operations
 
     // region Use Cases
-    @PostMapping("/upgrade/{userId}")
-    public ResponseEntity<Object> updgrade(@PathVariable("userId") Long userId) {
-        log.info("Post operation in /user-rank/upgrade/{}", userId);
-        try {
-            UserRank userRank = userRankService.upgrade(userId);
-            return new ResponseEntity<>(userRank, HttpStatus.OK);
-        } catch (IllegalAccessException iae) {
-            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
     // endregion Use Cases
 }

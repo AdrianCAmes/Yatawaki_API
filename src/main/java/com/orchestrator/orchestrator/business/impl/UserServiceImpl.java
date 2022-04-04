@@ -138,9 +138,14 @@ public class UserServiceImpl implements UserService {
             throw new NoSuchElementException("Active rank not found for user");
         }
 
-        Optional<Unlockable> optionalAvatar = userUnlockableRepository.findInUseAvatarByUser(user.getIdUser());
+        Optional<Unlockable> optionalAvatar = userUnlockableRepository.findInUseAvatarByUserId(user.getIdUser());
         if (optionalAvatar.isEmpty()) {
             throw new NoSuchElementException("Avatar not found for user");
+        }
+
+        List<Unlockable> ownedUnlockables = userUnlockableRepository.findSymphoniesByUserId(user.getIdUser());
+        if (ownedUnlockables.isEmpty()) {
+            throw new IndexOutOfBoundsException("User does not have symphonies");
         }
 
         UserResumeResponseDto userResume = new UserResumeResponseDto();
@@ -150,6 +155,7 @@ public class UserServiceImpl implements UserService {
         userResume.setLevel(lastActiveRank.getRank().getLevel());
         userResume.setCurrentExperience(lastActiveRank.getCurrentExperience());
         userResume.setIcon(optionalAvatar.get().getIcon());
+        userResume.setSymphonies(ownedUnlockables);
         return userResume;
     }
     // endregion Use Cases
