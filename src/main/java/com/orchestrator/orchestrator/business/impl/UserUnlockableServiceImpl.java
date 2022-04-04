@@ -84,6 +84,16 @@ public class UserUnlockableServiceImpl implements UserUnlockableService {
     }
 
     @Override
+    public List<Unlockable> findAvatarsByUser(Long idUser) {
+        return userUnlockableRepository.findAvatarsByUser(idUser);
+    }
+
+    @Override
+    public List<Unlockable> findAchievementsByUser(Long idUser) {
+        return userUnlockableRepository.findAchievementsByUser(idUser);
+    }
+
+    @Override
     public List<Unlockable> unlockObjectsByUnlocker(UserUnlockableUnlockRequestDto userUnlockableUnlockRequestDto) throws IllegalAccessException {
         List<Long> ownedUnlockables = userUnlockableRepository.findUnlockablesByUser(userUnlockableUnlockRequestDto.getIdUser()).stream().map(Unlockable::getIdUnlockable).collect(Collectors.toList());
         List<Unlockable> objectsToUnlock = unlockableRepository.findByUnlockerTypeAndUnlockerValue(userUnlockableUnlockRequestDto.getUnlockerType(), userUnlockableUnlockRequestDto.getUnlockerValue()).stream()

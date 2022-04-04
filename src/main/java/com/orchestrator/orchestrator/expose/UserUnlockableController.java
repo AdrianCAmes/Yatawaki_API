@@ -115,9 +115,41 @@ public class UserUnlockableController {
     @GetMapping("/user/{userId}/symphonies")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> findSymphoniesByUser(@PathVariable("userId") Long userId) {
-        log.info("Get operation in /user-unlockable/{}/symphony", userId);
+        log.info("Get operation in /user-unlockable/user/{}/symphonies", userId);
         try {
             List<Unlockable> retrievedUserUnlockables = userUnlockableService.findSymphoniesByUser(userId);
+            if (!retrievedUserUnlockables.isEmpty()) {
+                return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Symphonies not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/user/{userId}/avatars")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findAvatarsByUser(@PathVariable("userId") Long userId) {
+        log.info("Get operation in /user-unlockable/user/{}/avatars", userId);
+        try {
+            List<Unlockable> retrievedUserUnlockables = userUnlockableService.findAvatarsByUser(userId);
+            if (!retrievedUserUnlockables.isEmpty()) {
+                return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Symphonies not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/user/{userId}/achievements")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findAchievementsByUser(@PathVariable("userId") Long userId) {
+        log.info("Get operation in /user-unlockable/user/{}/achievements", userId);
+        try {
+            List<Unlockable> retrievedUserUnlockables = userUnlockableService.findAchievementsByUser(userId);
             if (!retrievedUserUnlockables.isEmpty()) {
                 return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
             } else {

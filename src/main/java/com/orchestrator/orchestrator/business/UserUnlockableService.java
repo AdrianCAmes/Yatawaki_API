@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface UserUnlockableService extends BaseService<UserUnlockable, Long> {
     List<Unlockable> findSymphoniesByUser(Long idUser);
+    List<Unlockable> findAvatarsByUser(Long idUser);
+    List<Unlockable> findAchievementsByUser(Long idUser);
     List<Unlockable> unlockObjectsByUnlocker(UserUnlockableUnlockRequestDto userUnlockableUnlockRequestDto) throws IllegalAccessException;
 }
