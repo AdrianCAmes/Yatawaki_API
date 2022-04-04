@@ -3,6 +3,8 @@ package com.orchestrator.orchestrator.business.impl;
 import com.orchestrator.orchestrator.business.UserRankService;
 import com.orchestrator.orchestrator.model.UserRank;
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankUpgradeRequestDto;
+import com.orchestrator.orchestrator.model.dto.userrank.response.UserRankUpgradeResponseDto;
 import com.orchestrator.orchestrator.repository.RankRepository;
 import com.orchestrator.orchestrator.repository.UserRankRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
@@ -80,28 +82,47 @@ public class UserRankServiceImpl implements UserRankService {
 
     // region Use Cases
     @Override
-    public UserRank upgrade(Long idUser) throws IllegalAccessException {
-        UserRank lastActiveRank = userRankRepository.findLastActiveByUser(idUser).orElse(null);
+    public UserRankUpgradeResponseDto upgrade(UserRankUpgradeRequestDto userRankUpgradeRequestDto) throws IllegalAccessException {
+        UserRank lastActiveRank = userRankRepository.findLastActiveByUser(userRankUpgradeRequestDto.getIdUser()).orElse(null);
         if (lastActiveRank == null) {
             throw new NoSuchElementException("Active rank not found for user");
         }
 
-        // Check if it's the last status
-        if (lastActiveRank.getRank().getLevel() < MAX_LEVEL) {
-            // Finish the last active rank of the user
-            lastActiveRank.setEndDate(LocalDate.now());
-            lastActiveRank.setStatus(UserRankStatusConstants.FINISHED.getValue());
-            update(lastActiveRank);
+        UserRankUpgradeResponseDto userRankUpgradeResponseDto = new UserRankUpgradeResponseDto();
+        Integer newCurrentExperience = lastActiveRank.getCurrentExperience() + userRankUpgradeRequestDto.getGainedExperience();
 
-            // Establish the new rank for the user
-            UserRankCreateRequestDto userRankCreateRequestDto = new UserRankCreateRequestDto();
-            userRankCreateRequestDto.setIdUser(idUser);
-            userRankCreateRequestDto.setIdRank(rankRepository.findByLevel(lastActiveRank.getRank().getLevel() + 1).getIdRank());
-            UserRank nextUserRank = userRankUtils.buildDomainFromCreateRequestDto(userRankCreateRequestDto);
-            return create(nextUserRank);
+        if (newCurrentExperience < lastActiveRank.getRank().getMaxExperience()) {
+            lastActiveRank.setCurrentExperience(newCurrentExperience);
+            update(lastActiveRank);
+            userRankUpgradeResponseDto.setUpgraded(Boolean.FALSE);
         } else {
-            throw new ArrayIndexOutOfBoundsException("User has reached the higher rank");
+            newCurrentExperience = newCurrentExperience - lastActiveRank.getRank().getMaxExperience();
+
+            // Check if it's the last status
+            if (lastActiveRank.getRank().getLevel() < MAX_LEVEL) {
+                // Finish the last active rank of the user
+                lastActiveRank.setEndDate(LocalDate.now());
+                lastActiveRank.setStatus(UserRankStatusConstants.FINISHED.getValue());
+                lastActiveRank.setCurrentExperience(lastActiveRank.getRank().getMaxExperience());
+                update(lastActiveRank);
+
+                // Establish the new rank for the user
+                UserRankCreateRequestDto userRankCreateRequestDto = new UserRankCreateRequestDto();
+                userRankCreateRequestDto.setIdUser(userRankUpgradeRequestDto.getIdUser());
+                userRankCreateRequestDto.setIdRank(rankRepository.findByLevel(lastActiveRank.getRank().getLevel() + 1).getIdRank());
+                UserRank nextUserRank = userRankUtils.buildDomainFromCreateRequestDto(userRankCreateRequestDto);
+                nextUserRank.setCurrentExperience(newCurrentExperience);
+                create(nextUserRank);
+                userRankUpgradeResponseDto.setUpgraded(Boolean.TRUE);
+            } else {
+                if (lastActiveRank.getCurrentExperience() < lastActiveRank.getRank().getMaxExperience()) {
+                    lastActiveRank.setCurrentExperience(lastActiveRank.getRank().getMaxExperience());
+                    update(lastActiveRank);
+                }
+                userRankUpgradeResponseDto.setUpgraded(Boolean.FALSE);
+            }
         }
+        return userRankUpgradeResponseDto;
     }
     // endregion Use Cases
 }
