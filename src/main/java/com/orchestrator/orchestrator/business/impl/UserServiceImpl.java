@@ -2,6 +2,7 @@ package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.UserService;
 import com.orchestrator.orchestrator.model.*;
+import com.orchestrator.orchestrator.model.dto.user.response.UserProfileResponseDto;
 import com.orchestrator.orchestrator.model.dto.user.response.UserResumeResponseDto;
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsCreateRequestDto;
@@ -157,6 +158,29 @@ public class UserServiceImpl implements UserService {
         userResume.setIcon(optionalAvatar.get().getIcon());
         userResume.setSymphonies(ownedUnlockables);
         return userResume;
+    }
+
+    @Override
+    public UserProfileResponseDto findUserProfileByUserId(Long id) throws IllegalAccessException {
+        User user = findById(id);
+        if (user == null) {
+            throw new NoSuchElementException("User does not exist in database");
+        }
+        Unlockable avatar = userUnlockableRepository.findInUseAvatarByUserId(id).orElse(null);
+        if (avatar == null) {
+            throw new NoSuchElementException("User does not have an active avatar");
+        }
+        UserRank userRank = userRankRepository.findLastActiveByUser(id).orElse(null);
+        if (userRank == null) {
+            throw new NoSuchElementException("User does not hava an active ran");
+        }
+
+        UserProfileResponseDto userProfileResponseDto = new UserProfileResponseDto();
+        generalUtils.mapFields(user, userProfileResponseDto);
+        userProfileResponseDto.setAvatar(avatar);
+        userProfileResponseDto.setUserRank(userRank);
+
+        return userProfileResponseDto;
     }
     // endregion Use Cases
 }
