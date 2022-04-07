@@ -4,6 +4,7 @@ import com.orchestrator.orchestrator.business.UserService;
 import com.orchestrator.orchestrator.model.User;
 import com.orchestrator.orchestrator.model.dto.user.request.*;
 import com.orchestrator.orchestrator.model.dto.user.response.UserAuthenticateResponseDto;
+import com.orchestrator.orchestrator.model.dto.user.response.UserProfileResponseDto;
 import com.orchestrator.orchestrator.model.dto.user.response.UserResumeResponseDto;
 import com.orchestrator.orchestrator.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -135,6 +136,20 @@ public class UserController {
         try {
             UserResumeResponseDto userResume = userService.findUserResumeByUsername(username);
             return new ResponseEntity<>(userResume, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @GetMapping("/{id}/profile")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findUserProfileById(@PathVariable("id") Long id) {
+        log.info("Get operation in /user/{}/profile", id);
+        try {
+            UserProfileResponseDto userProfile = userService.findUserProfileByUserId(id);
+            return new ResponseEntity<>(userProfile, HttpStatus.OK);
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
