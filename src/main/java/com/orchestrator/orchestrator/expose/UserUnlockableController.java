@@ -140,7 +140,7 @@ public class UserUnlockableController {
     public ResponseEntity<Object> findMarketUnlockablesByUserId(@PathVariable("userId") Long userId) {
         log.info("Get operation in /user-unlockable/user/{}/market", userId);
         try {
-            List<Unlockable> retrievedUserUnlockables = userUnlockableService.findMarketUnlockablesByUserId(userId);
+            UserUnlockableFilteredResponseDto retrievedUserUnlockables = userUnlockableService.findMarketUnlockablesByUserId(userId);
             return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

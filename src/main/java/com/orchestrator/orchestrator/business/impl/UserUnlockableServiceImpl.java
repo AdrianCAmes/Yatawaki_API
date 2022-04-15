@@ -1,9 +1,7 @@
 package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.UserUnlockableService;
-import com.orchestrator.orchestrator.model.Unlockable;
-import com.orchestrator.orchestrator.model.User;
-import com.orchestrator.orchestrator.model.UserUnlockable;
+import com.orchestrator.orchestrator.model.*;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableTradeRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableUnlockRequestDto;
@@ -106,11 +104,21 @@ public class UserUnlockableServiceImpl implements UserUnlockableService {
     }
 
     @Override
-    public List<Unlockable> findMarketUnlockablesByUserId(Long idUser) {
+    public UserUnlockableFilteredResponseDto findMarketUnlockablesByUserId(Long idUser) {
         List<Long> ownedUnlockables = userUnlockableRepository.findUnlockablesByUserId(idUser).stream().map(Unlockable::getIdUnlockable).collect(Collectors.toList());
-        return unlockableRepository.findMarketUnlockables().stream()
+        List<Unlockable> marketUnlockables = unlockableRepository.findMarketUnlockables().stream()
                 .filter(object -> !ownedUnlockables.contains(object.getIdUnlockable()))
                 .collect(Collectors.toList());
+        List<Unlockable> achievements = marketUnlockables.stream().filter(unlockable -> unlockable instanceof Achievement).collect(Collectors.toList());
+        List<Unlockable> symphonies = marketUnlockables.stream().filter(unlockable -> unlockable instanceof Symphony).collect(Collectors.toList());
+        List<Unlockable> avatars = marketUnlockables.stream().filter(unlockable -> unlockable instanceof Avatar).collect(Collectors.toList());
+
+        UserUnlockableFilteredResponseDto userUnlockableFilteredResponseDto = new UserUnlockableFilteredResponseDto();
+        userUnlockableFilteredResponseDto.setAchievements(achievements);
+        userUnlockableFilteredResponseDto.setSymphonies(symphonies);
+        userUnlockableFilteredResponseDto.setAvatars(avatars);
+
+        return userUnlockableFilteredResponseDto;
     }
 
     @Override

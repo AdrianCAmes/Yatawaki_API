@@ -12,7 +12,7 @@ import java.util.List;
 public interface UserUnlockableService extends BaseService<UserUnlockable, Long> {
     UserUnlockableFilteredResponseDto findFilteredUnlockablesByUserId(Long idUser);
     List<Unlockable> findAvatarsByUserId(Long idUser);
-    List<Unlockable> findMarketUnlockablesByUserId(Long idUser);
+    UserUnlockableFilteredResponseDto findMarketUnlockablesByUserId(Long idUser);
     List<Unlockable> unlockObjectsByUnlocker(UserUnlockableUnlockRequestDto userUnlockableUnlockRequestDto) throws IllegalAccessException;
     Unlockable tradeObject(UserUnlockableTradeRequestDto userUnlockableTradeRequestDto) throws IllegalAccessException;
     List<UserUnlockableStatusConstants> getPossibleStatus();
