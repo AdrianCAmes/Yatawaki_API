@@ -6,6 +6,7 @@ import com.orchestrator.orchestrator.model.dto.gesture.request.GestureChangeRequ
 import com.orchestrator.orchestrator.model.dto.gesture.request.GestureCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.gesture.request.GestureUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.GestureUtils;
+import com.orchestrator.orchestrator.utils.constants.GestureStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -110,5 +111,15 @@ public class GestureController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /gesture/status");
+        try {
+            List<GestureStatusConstants> possibleStatus = gestureService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

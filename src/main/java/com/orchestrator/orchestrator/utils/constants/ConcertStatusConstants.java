@@ -5,14 +5,16 @@ import lombok.Getter;
 
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum UnlockableStatusConstants {
+public enum ConcertStatusConstants {
     DELETED("Eliminado", 0),
-    ACTIVE("Activo", 1);
+    STARTED("Iniciado", 1),
+    CANCELED("Cancelado", 2),
+    FINISHED("Terminado", 3);
 
     String description;
     Integer value;
 
-    UnlockableStatusConstants(String description, Integer value) {
+    ConcertStatusConstants(String description, Integer value) {
         this.description = description;
         this.value = value;
     }

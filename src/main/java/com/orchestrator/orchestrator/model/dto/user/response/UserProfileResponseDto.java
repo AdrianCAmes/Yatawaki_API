@@ -11,7 +11,6 @@ public class UserProfileResponseDto {
     private String mail;
     private String nickname;
     private Integer coinsOwned;
-    private Integer notesOwned;
     private Unlockable avatar;
     private UserRank userRank;
 }

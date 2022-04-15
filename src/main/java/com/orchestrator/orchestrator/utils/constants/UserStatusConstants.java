@@ -1,16 +1,20 @@
 package com.orchestrator.orchestrator.utils.constants;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 @Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum UserStatusConstants {
-    DELETED(0),
-    ACTIVE(1),
-    BLOCKED(2);
+    DELETED("Eliminado", 0),
+    ACTIVE("Activo", 1),
+    BLOCKED("Bloqueado", 2);
 
+    String description;
     Integer value;
 
-    UserStatusConstants(Integer value) {
+    UserStatusConstants(String description, Integer value) {
+        this.description = description;
         this.value = value;
     }
 }

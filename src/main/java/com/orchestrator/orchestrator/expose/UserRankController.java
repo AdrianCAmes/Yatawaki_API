@@ -6,6 +6,7 @@ import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankChangeRe
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.UserRankUtils;
+import com.orchestrator.orchestrator.utils.constants.UserRankStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -110,5 +111,15 @@ public class UserRankController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /user-rank/status");
+        try {
+            List<UserRankStatusConstants> possibleStatus = userRankService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

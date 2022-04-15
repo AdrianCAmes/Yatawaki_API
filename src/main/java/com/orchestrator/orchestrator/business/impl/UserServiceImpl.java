@@ -12,15 +12,16 @@ import com.orchestrator.orchestrator.utils.GeneralUtils;
 import com.orchestrator.orchestrator.utils.UserRankUtils;
 import com.orchestrator.orchestrator.utils.UserStatisticsUtils;
 import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
-import com.orchestrator.orchestrator.utils.constants.NumericConstants;
-import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
-import com.orchestrator.orchestrator.utils.constants.UserUnlockableStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -113,7 +114,7 @@ public class UserServiceImpl implements UserService {
         userRankRepository.save(userRankToSave);
 
         // Grant basic unlockable package
-        List<Unlockable> baseUnlockables = unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.RANK.getName(), 1);
+        List<Unlockable> baseUnlockables = unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.RANK.getValue(), 1);
         for(Unlockable unlockable : baseUnlockables) {
             UserUnlockableCreateRequestDto userUnlockableCreateRequestDto = new UserUnlockableCreateRequestDto();
             userUnlockableCreateRequestDto.setIdUser(createdUser.getIdUser());
@@ -128,7 +129,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResumeResponseDto findUserResumeByUsername(String username) {
+    public UserResumeResponseDto findUserResumeByUsername(String username) throws IllegalAccessException {
         User user = userRepository.findByUniqueIdentifier(username).orElse(null);
         if (user == null) {
             throw new NoSuchElementException("User does not exist in database");
@@ -150,9 +151,7 @@ public class UserServiceImpl implements UserService {
         }
 
         UserResumeResponseDto userResume = new UserResumeResponseDto();
-        userResume.setId(user.getIdUser());
-        userResume.setCoinsOwned(user.getCoinsOwned());
-        userResume.setNotesOwned(user.getNotesOwned());
+        generalUtils.mapFields(user, userResume);
         userResume.setLevel(lastActiveRank.getRank().getLevel());
         userResume.setCurrentExperience(lastActiveRank.getCurrentExperience());
         userResume.setIcon(optionalAvatar.get().getIcon());
@@ -181,6 +180,16 @@ public class UserServiceImpl implements UserService {
         userProfileResponseDto.setUserRank(userRank);
 
         return userProfileResponseDto;
+    }
+
+    @Override
+    public List<UserStatusConstants> getPossibleStatus() {
+        return Arrays.stream(UserStatusConstants.values()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserRoleConstants> getPossibleRoles() {
+        return Arrays.stream(UserRoleConstants.values()).collect(Collectors.toList());
     }
     // endregion Use Cases
 }

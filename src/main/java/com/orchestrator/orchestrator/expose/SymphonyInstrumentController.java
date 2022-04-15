@@ -7,6 +7,7 @@ import com.orchestrator.orchestrator.model.dto.symphonyinstrument.request.Sympho
 import com.orchestrator.orchestrator.model.dto.symphonyinstrument.request.SymphonyInstrumentCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.symphonyinstrument.request.SymphonyInstrumentUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.SymphonyInstrumentUtils;
+import com.orchestrator.orchestrator.utils.constants.SymphonyInstrumentStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -118,6 +119,17 @@ public class SymphonyInstrumentController {
         try {
             List<Instrument> retrievedInstruments = symphonyInstrumentService.findInstrumentsBySymphony(idSymphony);
             return new ResponseEntity<>(retrievedInstruments, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /symphony-instrument/status");
+        try {
+            List<SymphonyInstrumentStatusConstants> possibleStatus = symphonyInstrumentService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

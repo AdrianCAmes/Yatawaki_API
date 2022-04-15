@@ -6,11 +6,15 @@ import com.orchestrator.orchestrator.repository.RankRepository;
 import com.orchestrator.orchestrator.repository.UserRankRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
 import com.orchestrator.orchestrator.utils.UserRankUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.UserRankStatusConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -71,5 +75,9 @@ public class UserRankServiceImpl implements UserRankService {
     // endregion CRUD Operations
 
     // region Use Cases
+    @Override
+    public List<UserRankStatusConstants> getPossibleStatus() {
+        return Arrays.stream(UserRankStatusConstants.values()).collect(Collectors.toList());
+    }
     // endregion Use Cases
 }

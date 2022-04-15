@@ -6,6 +6,7 @@ import com.orchestrator.orchestrator.model.dto.symphonygesture.request.SymphonyG
 import com.orchestrator.orchestrator.model.dto.symphonygesture.request.SymphonyGestureCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.symphonygesture.request.SymphonyGestureUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.SymphonyGestureUtils;
+import com.orchestrator.orchestrator.utils.constants.SymphonyGestureStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -110,5 +111,15 @@ public class SymphonyGestureController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /symphony-gesture/status");
+        try {
+            List<SymphonyGestureStatusConstants> possibleStatus = symphonyGestureService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

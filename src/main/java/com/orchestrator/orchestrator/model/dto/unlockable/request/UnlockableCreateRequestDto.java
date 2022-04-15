@@ -10,5 +10,4 @@ public class UnlockableCreateRequestDto {
     private String unlockerType;
     private Integer unlockerValue;
     private Integer coinsCost;
-    private Integer notesCost;
 }
