@@ -6,6 +6,8 @@ import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableChan
 import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.UnlockableUtils;
+import com.orchestrator.orchestrator.utils.constants.UnlockableStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -139,6 +141,28 @@ public class UnlockableController {
         log.info("Delete operation in /unlockable/{}/image", id);
         byte[] image = unlockableService.findById(id).getIcon();
         return new ByteArrayResource(image);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /unlockable/status");
+        try {
+            List<UnlockableStatusConstants> possibleStatus = unlockableService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/unlocker-types")
+    public ResponseEntity<Object> getPossibleUnlockerTypes() {
+        log.info("Get operation in /unlockable/unlocker-types");
+        try {
+            List<UnlockerTypeConstants> possibleUnlockerTypes = unlockableService.getPossibleUnlockerTypes();
+            return new ResponseEntity<>(possibleUnlockerTypes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     // endregion Use Cases
 }

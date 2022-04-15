@@ -10,7 +10,8 @@ import com.orchestrator.orchestrator.repository.*;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
 import com.orchestrator.orchestrator.utils.UserRankUtils;
 import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
-import com.orchestrator.orchestrator.utils.constants.GameStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.ConcertStatusConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import com.orchestrator.orchestrator.utils.constants.UserRankStatusConstants;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -44,7 +46,7 @@ public class ConcertServiceImpl implements ConcertService {
     // region CRUD Operations
     @Override
     public Concert create(Concert concert) {
-        if (concert.getIdGame() != null) throw new IllegalArgumentException("Body should not contain id");
+        if (concert.getIdConcert() != null) throw new IllegalArgumentException("Body should not contain id");
         return concertRepository.save(concert);
     }
 
@@ -60,7 +62,7 @@ public class ConcertServiceImpl implements ConcertService {
 
     @Override
     public Concert change(Concert concert) {
-        Concert concertToChange = findById(concert.getIdGame());
+        Concert concertToChange = findById(concert.getIdConcert());
         if (concertToChange != null) {
             return concertRepository.save(concert);
         } else {
@@ -70,7 +72,7 @@ public class ConcertServiceImpl implements ConcertService {
 
     @Override
     public Concert update(Concert concert) throws IllegalAccessException {
-        Concert concertToUpdate = findById(concert.getIdGame());
+        Concert concertToUpdate = findById(concert.getIdConcert());
         if (concertToUpdate != null) {
             generalUtils.mapFields(concert, concertToUpdate);
             return concertRepository.save(concertToUpdate);
@@ -114,16 +116,21 @@ public class ConcertServiceImpl implements ConcertService {
         unlockObjects(concertCompleteRequestDto, concertCompleteResponseDto, user, userStatistics);
         return concertCompleteResponseDto;
     }
+
+    @Override
+    public List<ConcertStatusConstants> getPossibleStatus() {
+        return Arrays.stream(ConcertStatusConstants.values()).collect(Collectors.toList());
+    }
     // endregion Use Cases
 
     // region Private Functions
     private void updateConcertResults(ConcertCompleteRequestDto request) throws IllegalAccessException {
         Concert concertToUpdate = new Concert();
-        concertToUpdate.setIdGame(request.getIdConcert());
+        concertToUpdate.setIdConcert(request.getIdConcert());
         concertToUpdate.setPoints(request.getPoints());
         concertToUpdate.setGesturesCompleted(request.getGesturesCompleted());
         concertToUpdate.setAccuracyRate(request.getAccuracyRate());
-        concertToUpdate.setStatus(GameStatusConstants.FINISHED.getValue());
+        concertToUpdate.setStatus(ConcertStatusConstants.FINISHED.getValue());
         update(concertToUpdate);
     }
 
@@ -188,11 +195,11 @@ public class ConcertServiceImpl implements ConcertService {
     private void unlockObjects(ConcertCompleteRequestDto request, ConcertCompleteResponseDto response, User user, UserStatistics userStatistics) throws IllegalAccessException {
         List<Long> ownedUnlockables = userUnlockableRepository.findUnlockablesByUserId(user.getIdUser()).stream().map(Unlockable::getIdUnlockable).collect(Collectors.toList());
         List<Unlockable> possibleUnlockables = new ArrayList<>();
-        possibleUnlockables.addAll(unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.POINTS.getName(), request.getPoints()));
-        possibleUnlockables.addAll(unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.CONCERTS.getName(), userStatistics.getConcertsOrchestrated()));
-        possibleUnlockables.addAll(unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.ACCURACY.getName(), request.getAccuracyRate().intValue()));
+        possibleUnlockables.addAll(unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.POINTS.getValue(), request.getPoints()));
+        possibleUnlockables.addAll(unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.CONCERTS.getValue(), userStatistics.getConcertsOrchestrated()));
+        possibleUnlockables.addAll(unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.ACCURACY.getValue(), request.getAccuracyRate().intValue()));
         if (response.getNewRank() != null) {
-            possibleUnlockables.addAll(unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.RANK.getName(), response.getNewRank().getLevel()));
+            possibleUnlockables.addAll(unlockableRepository.findByUnlockerTypeAndUnlockerValue(UnlockerTypeConstants.RANK.getValue(), response.getNewRank().getLevel()));
         }
 
         List<Unlockable> objectsToUnlock = possibleUnlockables.stream()

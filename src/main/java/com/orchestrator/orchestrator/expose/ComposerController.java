@@ -6,6 +6,7 @@ import com.orchestrator.orchestrator.model.dto.composer.request.ComposerChangeRe
 import com.orchestrator.orchestrator.model.dto.composer.request.ComposerCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.composer.request.ComposerUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.ComposerUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -110,5 +111,15 @@ public class ComposerController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /composer/status");
+        try {
+            List<ComposerStatusConstants> possibleStatus = composerService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

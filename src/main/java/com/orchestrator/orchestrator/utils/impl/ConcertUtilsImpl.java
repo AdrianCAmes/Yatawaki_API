@@ -8,7 +8,7 @@ import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCreateRequ
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.ConcertUtils;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
-import com.orchestrator.orchestrator.utils.constants.GameStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.ConcertStatusConstants;
 import com.orchestrator.orchestrator.utils.constants.NumericConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class ConcertUtilsImpl implements ConcertUtils {
         concert.setPoints(NumericConstants.ZERO.getValue());
         concert.setAccuracyRate(NumericConstants.ZERO.getValue().doubleValue());
         concert.setGesturesCompleted(NumericConstants.ZERO.getValue());
-        concert.setStatus(GameStatusConstants.STARTED.getValue());
+        concert.setStatus(ConcertStatusConstants.STARTED.getValue());
         generalUtils.mapFields(concertCreateRequestDto, concert);
         return concert;
     }

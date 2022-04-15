@@ -15,7 +15,7 @@ public class UserChangeRequestDto {
     private String mail;
     private LocalDate birthDate;
     private Integer coinsOwned;
-    private Integer notesOwned;
     private Integer status;
     private String role;
+    private Boolean showTutorials;
 }

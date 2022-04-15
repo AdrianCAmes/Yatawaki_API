@@ -1,12 +1,12 @@
 package com.orchestrator.orchestrator.expose;
 
 import com.orchestrator.orchestrator.business.UserStatisticsService;
-import com.orchestrator.orchestrator.model.User;
 import com.orchestrator.orchestrator.model.UserStatistics;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsChangeRequestDto;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.UserStatisticsUtils;
+import com.orchestrator.orchestrator.utils.constants.UserStatisticsStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -112,5 +112,15 @@ public class UserStatisticsController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /user-statistics/status");
+        try {
+            List<UserStatisticsStatusConstants> possibleStatus = userStatisticsService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

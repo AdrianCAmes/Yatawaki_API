@@ -9,9 +9,9 @@ import java.util.List;
 public class UserResumeResponseDto {
     private Long id;
     private Integer coinsOwned;
-    private Integer notesOwned;
     private Integer currentExperience;
     private Integer level;
     private byte[] icon;
     private List<Unlockable> symphonies;
+    private Boolean showTutorials;
 }

@@ -6,6 +6,7 @@ import com.orchestrator.orchestrator.model.dto.instrument.request.InstrumentChan
 import com.orchestrator.orchestrator.model.dto.instrument.request.InstrumentCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.instrument.request.InstrumentUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.InstrumentUtils;
+import com.orchestrator.orchestrator.utils.constants.InstrumentStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -148,6 +149,17 @@ public class InstrumentController {
         try {
             List<Instrument> retrievedInstruments = instrumentService.findInstrumentsByName(name);
             return new ResponseEntity<>(retrievedInstruments, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /instrument/status");
+        try {
+            List<InstrumentStatusConstants> possibleStatus = instrumentService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

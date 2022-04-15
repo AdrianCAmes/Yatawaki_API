@@ -8,6 +8,7 @@ import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCreateRequ
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertUpdateRequestDto;
 import com.orchestrator.orchestrator.model.dto.concert.response.ConcertCompleteResponseDto;
 import com.orchestrator.orchestrator.utils.ConcertUtils;
+import com.orchestrator.orchestrator.utils.constants.ConcertStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -119,6 +120,17 @@ public class ConcertController {
         try {
             ConcertCompleteResponseDto concert = concertService.complete(concertCompleteRequestDto);
             return new ResponseEntity<>(concert, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /concert/status");
+        try {
+            List<ConcertStatusConstants> possibleStatus = concertService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
