@@ -33,10 +33,12 @@ public class UserUtilsImpl implements UserUtils {
 
     @Override
     public User buildDomainFromUpdateRequestDto(UserUpdateRequestDto userUpdateRequestDto) throws IllegalAccessException {
-        UserStatistics userStatistics = new UserStatistics();
-        userStatistics.setIdUserStatistics(userUpdateRequestDto.getIdUserStatistics());
         User user = new User();
-        user.setUserStatistics(userStatistics);
+        if (userUpdateRequestDto.getIdUserStatistics() != null) {
+            UserStatistics userStatistics = new UserStatistics();
+            userStatistics.setIdUserStatistics(userUpdateRequestDto.getIdUserStatistics());
+            user.setUserStatistics(userStatistics);
+        }
         generalUtils.mapFields(userUpdateRequestDto, user);
         return user;
     }

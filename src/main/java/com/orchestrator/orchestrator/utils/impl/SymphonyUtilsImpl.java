@@ -29,10 +29,12 @@ public class SymphonyUtilsImpl implements SymphonyUtils {
 
     @Override
     public Symphony buildDomainFromUpdateRequestDto(SymphonyUpdateRequestDto symphonyUpdateRequestDto) throws IllegalAccessException {
-        Composer composer = new Composer();
-        composer.setIdComposer(symphonyUpdateRequestDto.getIdComposer());
         Symphony symphony = new Symphony();
-        symphony.setComposer(composer);
+        if (symphonyUpdateRequestDto.getIdComposer() != null) {
+            Composer composer = new Composer();
+            composer.setIdComposer(symphonyUpdateRequestDto.getIdComposer());
+            symphony.setComposer(composer);
+        }
         generalUtils.mapFields(symphonyUpdateRequestDto, symphony);
         return symphony;
     }
