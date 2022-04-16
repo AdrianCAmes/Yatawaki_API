@@ -33,13 +33,17 @@ public class SymphonyInstrumentUtilsImpl implements SymphonyInstrumentUtils {
 
     @Override
     public SymphonyInstrument buildDomainFromUpdateRequestDto(SymphonyInstrumentUpdateRequestDto symphonyInstrumentUpdateRequestDto) throws IllegalAccessException {
-        Symphony symphony = new Symphony();
-        symphony.setIdUnlockable(symphonyInstrumentUpdateRequestDto.getIdSymphony());
-        Instrument instrument = new Instrument();
-        instrument.setIdInstrument(symphonyInstrumentUpdateRequestDto.getIdInstrument());
         SymphonyInstrument symphonyInstrument = new SymphonyInstrument();
-        symphonyInstrument.setSymphony(symphony);
-        symphonyInstrument.setInstrument(instrument);
+        if (symphonyInstrumentUpdateRequestDto.getIdSymphony() != null) {
+            Symphony symphony = new Symphony();
+            symphony.setIdUnlockable(symphonyInstrumentUpdateRequestDto.getIdSymphony());
+            symphonyInstrument.setSymphony(symphony);
+        }
+        if (symphonyInstrumentUpdateRequestDto.getIdInstrument() != null) {
+            Instrument instrument = new Instrument();
+            instrument.setIdInstrument(symphonyInstrumentUpdateRequestDto.getIdInstrument());
+            symphonyInstrument.setInstrument(instrument);
+        }
         generalUtils.mapFields(symphonyInstrumentUpdateRequestDto, symphonyInstrument);
         return symphonyInstrument;
     }

@@ -40,13 +40,17 @@ public class ConcertUtilsImpl implements ConcertUtils {
 
     @Override
     public Concert buildDomainFromUpdateRequestDto(ConcertUpdateRequestDto concertUpdateRequestDto) throws IllegalAccessException {
-        User user = new User();
-        user.setIdUser(concertUpdateRequestDto.getIdUser());
-        Symphony symphony = new Symphony();
-        symphony.setIdUnlockable(concertUpdateRequestDto.getIdSymphony());
         Concert concert = new Concert();
-        concert.setUser(user);
-        concert.setSymphony(symphony);
+        if (concertUpdateRequestDto.getIdUser() != null) {
+            User user = new User();
+            user.setIdUser(concertUpdateRequestDto.getIdUser());
+            concert.setUser(user);
+        }
+        if (concertUpdateRequestDto.getIdSymphony() != null) {
+            Symphony symphony = new Symphony();
+            symphony.setIdUnlockable(concertUpdateRequestDto.getIdSymphony());
+            concert.setSymphony(symphony);
+        }
         generalUtils.mapFields(concertUpdateRequestDto, concert);
         return concert;
     }
