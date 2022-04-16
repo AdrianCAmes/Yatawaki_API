@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class UserResumeResponseDto {
-    private Long id;
+    private Long idUser;
     private Integer coinsOwned;
     private Integer currentExperience;
     private Integer level;
