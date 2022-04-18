@@ -14,4 +14,5 @@ public class Symphony extends Unlockable {
     private Integer year;
     private Integer duration;
     private String type;
+    private String previewTrack;
 }

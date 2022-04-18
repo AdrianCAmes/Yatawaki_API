@@ -16,6 +16,5 @@ public class Instrument {
     private String shortDescription;
     private String type;
     private Integer status;
-    @Lob
-    private byte[] icon;
+    private String icon;
 }

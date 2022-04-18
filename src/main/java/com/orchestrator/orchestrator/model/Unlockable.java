@@ -18,7 +18,6 @@ public class Unlockable {
     private String unlockerType;
     private Integer unlockerValue;
     private Integer coinsCost;
-    @Lob
-    private byte[] icon;
+    private String icon;
     private Integer status;
 }

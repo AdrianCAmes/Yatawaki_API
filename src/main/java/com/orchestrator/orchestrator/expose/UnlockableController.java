@@ -116,33 +116,6 @@ public class UnlockableController {
     // endregion CRUD Operations
 
     // region Use Cases
-    @PostMapping("/{id}/image-upload")
-    public ResponseEntity<Object> uploadImage(@PathVariable("id") Long id, @RequestParam MultipartFile icon) {
-        log.info("Delete operation in /unlockable/{}/image-upload", id);
-        try {
-            Unlockable unlockableToUpdate = unlockableService.findById(id);
-            if (unlockableToUpdate != null) {
-                unlockableToUpdate.setIcon(icon.getBytes());
-                Unlockable updatedUnlockable = unlockableService.update(unlockableToUpdate);
-                return new ResponseEntity<>(updatedUnlockable, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Unlockable not found", HttpStatus.NOT_FOUND);
-            }
-        } catch (IllegalAccessException iae) {
-            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_JPEG_VALUE)
-    Resource downloadImage(@PathVariable Long id) {
-        log.info("Delete operation in /unlockable/{}/image", id);
-        byte[] image = unlockableService.findById(id).getIcon();
-        return new ByteArrayResource(image);
-    }
-
     @GetMapping("/status")
     public ResponseEntity<Object> getPossibleStatus() {
         log.info("Get operation in /unlockable/status");
