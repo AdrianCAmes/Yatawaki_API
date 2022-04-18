@@ -11,7 +11,7 @@ public class UserResumeResponseDto {
     private Integer coinsOwned;
     private Integer currentExperience;
     private Integer level;
-    private byte[] icon;
+    private String icon;
     private List<Unlockable> symphonies;
     private Boolean showTutorials;
 }

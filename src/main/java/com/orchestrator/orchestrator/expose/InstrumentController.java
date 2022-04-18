@@ -115,33 +115,6 @@ public class InstrumentController {
     // endregion CRUD Operations
 
     // region Use Cases
-    @PostMapping("/{id}/image-upload")
-    public ResponseEntity<Object> uploadImage(@PathVariable("id") Long id, @RequestParam MultipartFile icon) {
-        log.info("Delete operation in /instrument/{}/image-upload", id);
-        try {
-            Instrument instrumentToUpdate = instrumentService.findById(id);
-            if (instrumentToUpdate != null) {
-                instrumentToUpdate.setIcon(icon.getBytes());
-                Instrument updatedInstrument = instrumentService.update(instrumentToUpdate);
-                return new ResponseEntity<>(updatedInstrument, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Instrument not found", HttpStatus.NOT_FOUND);
-            }
-        } catch (IllegalAccessException iae) {
-            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_JPEG_VALUE)
-    Resource downloadImage(@PathVariable Long id) {
-        log.info("Delete operation in /instrument/{}/image", id);
-        byte[] image = instrumentService.findById(id).getIcon();
-        return new ByteArrayResource(image);
-    }
-
     @GetMapping("/name/{name}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> findInstrumentsByName(@PathVariable("name") String name){
