@@ -10,4 +10,5 @@ public class SymphonyUpdateRequestDto extends UnlockableUpdateRequestDto {
     private Integer duration;
     private String type;
     private String previewTrack;
+    private Integer initialBpm;
 }

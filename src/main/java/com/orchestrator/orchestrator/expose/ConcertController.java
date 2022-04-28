@@ -7,6 +7,7 @@ import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCompleteRe
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertUpdateRequestDto;
 import com.orchestrator.orchestrator.model.dto.concert.response.ConcertCompleteResponseDto;
+import com.orchestrator.orchestrator.model.dto.concert.response.ConcertStartResponseDto;
 import com.orchestrator.orchestrator.utils.ConcertUtils;
 import com.orchestrator.orchestrator.utils.constants.ConcertStatusConstants;
 import lombok.RequiredArgsConstructor;
@@ -113,6 +114,19 @@ public class ConcertController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @PostMapping("/start")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> startConcert(@RequestBody ConcertCreateRequestDto concertCreateRequestDto) {
+        log.info("Delete operation in /concert/complete");
+        try {
+            Concert concertToStart = concertUtils.buildDomainFromCreateRequestDto(concertCreateRequestDto);
+            ConcertStartResponseDto concert = concertService.start(concertToStart);
+            return new ResponseEntity<>(concert, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/complete")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> completeConcert(@RequestBody ConcertCompleteRequestDto concertCompleteRequestDto) {

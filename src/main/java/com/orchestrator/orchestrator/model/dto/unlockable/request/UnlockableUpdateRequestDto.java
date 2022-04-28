@@ -11,5 +11,6 @@ public class UnlockableUpdateRequestDto {
     private String unlockerType;
     private Integer unlockerValue;
     private Integer coinsCost;
+    private String icon;
     private Integer status;
 }

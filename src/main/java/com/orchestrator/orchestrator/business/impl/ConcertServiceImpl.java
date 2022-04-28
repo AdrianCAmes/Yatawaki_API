@@ -3,7 +3,10 @@ package com.orchestrator.orchestrator.business.impl;
 import com.orchestrator.orchestrator.business.ConcertService;
 import com.orchestrator.orchestrator.model.*;
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCompleteRequestDto;
+import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.concert.response.ConcertCompleteResponseDto;
+import com.orchestrator.orchestrator.model.dto.concert.response.ConcertStartResponseDto;
+import com.orchestrator.orchestrator.model.dto.instrument.response.InstrumentStartResponseDto;
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
 import com.orchestrator.orchestrator.repository.*;
@@ -40,6 +43,8 @@ public class ConcertServiceImpl implements ConcertService {
     private final UserUnlockableRepository userUnlockableRepository;
     private final UnlockableRepository unlockableRepository;
     private final UserStatisticsRepository userStatisticsRepository;
+    private final SymphonyRepository symphonyRepository;
+    private final SymphonyInstrumentRepository symphonyInstrumentRepository;
 
     private final Integer MAX_LEVEL = 9;
 
@@ -115,6 +120,32 @@ public class ConcertServiceImpl implements ConcertService {
         addPlayedConcerts(concertCompleteRequestDto, userStatistics);
         unlockObjects(concertCompleteRequestDto, concertCompleteResponseDto, user, userStatistics);
         return concertCompleteResponseDto;
+    }
+
+    @Override
+    public ConcertStartResponseDto start(Concert concert) throws IllegalAccessException {
+        Concert createdConcert = create(concert);
+        Symphony startSymphony = symphonyRepository.findById(createdConcert.getSymphony().getIdUnlockable()).orElse(null);
+        if (startSymphony == null) {
+            throw new NoSuchElementException("Symphony not found");
+        }
+        List<SymphonyInstrument> symphonyInstruments = symphonyInstrumentRepository.findBySymphony(createdConcert.getSymphony().getIdUnlockable());
+        if (symphonyInstruments.isEmpty()) {
+            throw new NoSuchElementException("Instruments not found ind symphony");
+        }
+        ConcertStartResponseDto concertStartResponseDto = new ConcertStartResponseDto();
+        generalUtils.mapFields(startSymphony, concertStartResponseDto);
+        concertStartResponseDto.setInstruments(symphonyInstruments.stream().map(symphonyInstrument -> {
+            InstrumentStartResponseDto instrumentStartResponseDto = new InstrumentStartResponseDto();
+            try {
+                generalUtils.mapFields(symphonyInstrument.getInstrument(), instrumentStartResponseDto);
+                generalUtils.mapFields(symphonyInstrument, instrumentStartResponseDto);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return instrumentStartResponseDto;
+        }).collect(Collectors.toList()));
+        return concertStartResponseDto;
     }
 
     @Override
