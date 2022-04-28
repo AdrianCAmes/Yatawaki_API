@@ -15,4 +15,5 @@ public class Symphony extends Unlockable {
     private Integer duration;
     private String type;
     private String previewTrack;
+    private Integer initialBpm;
 }

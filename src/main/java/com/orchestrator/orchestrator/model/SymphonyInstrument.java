@@ -17,5 +17,7 @@ public class SymphonyInstrument {
     @ManyToOne
     @JoinColumn(name = "idInstrument", nullable = false)
     private Instrument instrument;
+    private String track;
+    private String position;
     private Integer status;
 }
