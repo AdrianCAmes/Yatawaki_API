@@ -5,6 +5,7 @@ import com.orchestrator.orchestrator.model.Unlockable;
 import com.orchestrator.orchestrator.repository.UnlockableRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
 import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.UnlockableRarenessConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockableStatusConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +83,11 @@ public class UnlockableServiceImpl implements UnlockableService {
     @Override
     public List<UnlockerTypeConstants> getPossibleUnlockerTypes() {
         return Arrays.stream(UnlockerTypeConstants.values()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UnlockableRarenessConstants> getPossibleRareness() {
+        return Arrays.stream(UnlockableRarenessConstants.values()).collect(Collectors.toList());
     }
     // endregion Use Cases
 }
