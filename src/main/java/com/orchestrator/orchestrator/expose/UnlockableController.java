@@ -6,6 +6,7 @@ import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableChan
 import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.UnlockableUtils;
+import com.orchestrator.orchestrator.utils.constants.UnlockableRarenessConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockableStatusConstants;
 import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import lombok.RequiredArgsConstructor;
@@ -133,6 +134,17 @@ public class UnlockableController {
         try {
             List<UnlockerTypeConstants> possibleUnlockerTypes = unlockableService.getPossibleUnlockerTypes();
             return new ResponseEntity<>(possibleUnlockerTypes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/rareness")
+    public ResponseEntity<Object> getPossibleRareness() {
+        log.info("Get operation in /unlockable/rareness");
+        try {
+            List<UnlockableRarenessConstants> possibleRareness = unlockableService.getPossibleRareness();
+            return new ResponseEntity<>(possibleRareness, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
