@@ -134,6 +134,7 @@ public class ConcertServiceImpl implements ConcertService {
             throw new NoSuchElementException("Instruments not found ind symphony");
         }
         ConcertStartResponseDto concertStartResponseDto = new ConcertStartResponseDto();
+        generalUtils.mapFields(createdConcert, concertStartResponseDto);
         generalUtils.mapFields(startSymphony, concertStartResponseDto);
         concertStartResponseDto.setInstruments(symphonyInstruments.stream().map(symphonyInstrument -> {
             InstrumentStartResponseDto instrumentStartResponseDto = new InstrumentStartResponseDto();
