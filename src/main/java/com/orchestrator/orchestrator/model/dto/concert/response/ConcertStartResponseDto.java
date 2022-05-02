@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class ConcertStartResponseDto {
+    private Long idConcert;
     private String name;
     private Integer initialBpm;
     private Integer duration;
