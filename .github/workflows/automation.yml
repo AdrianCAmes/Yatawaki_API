@@ -52,20 +52,20 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-    #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' }}
-  #deploy-to-azure:
-    #name: deploy to azure
-    #needs: push-to-docker
-    #runs-on: ubuntu-latest
-      #steps:
-      #- uses: actions/checkout@master
-      #- name: deploy to cluster
-      #uses: steebchen/kubectl@v2.0.0
-      #with:
-      #config: ${{ secrets.KUBE_CONFIG_DATA }}
-      #command: set image --record deployment/yatawaki-api yatawaki-api=u201711778/yatawaki-api:main
-      #- name: verify deployment
-      #uses: steebchen/kubectl@v2.0.0
-      #with:
-      #config: ${{ secrets.KUBE_CONFIG_DATA }}
-    #command: rollout status deployment/yatawaki-api
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+  deploy-to-azure:
+    name: deploy to azure
+    needs: push-to-docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: deploy to cluster
+        uses: steebchen/kubectl@v2.0.0
+        with:
+          config: ${{ secrets.KUBE_CONFIG_DATA }}
+          command: set image --record deployment/yatawaki-api yatawaki-api=u201711778/yatawaki-api:main
+      - name: verify deployment
+        uses: steebchen/kubectl@v2.0.0
+        with:
+          config: ${{ secrets.KUBE_CONFIG_DATA }}
+          command: rollout status deployment/yatawaki-api
