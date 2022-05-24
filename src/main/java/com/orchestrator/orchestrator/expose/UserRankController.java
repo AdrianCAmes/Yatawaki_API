@@ -6,10 +6,12 @@ import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankChangeRe
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userrank.request.UserRankUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.UserRankUtils;
+import com.orchestrator.orchestrator.utils.constants.UserRankStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/user-rank")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class UserRankController {
     private final UserRankService userRankService;
     private final UserRankUtils userRankUtils;
@@ -108,5 +111,15 @@ public class UserRankController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /user-rank/status");
+        try {
+            List<UserRankStatusConstants> possibleStatus = userRankService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

@@ -4,16 +4,22 @@ import com.orchestrator.orchestrator.business.UserStatisticsService;
 import com.orchestrator.orchestrator.model.UserStatistics;
 import com.orchestrator.orchestrator.repository.UserStatisticsRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.UserStatisticsStatusConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserStatisticsServiceImpl implements UserStatisticsService {
+    // Self repository
     private final UserStatisticsRepository userStatisticsRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -67,5 +73,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     // endregion CRUD Operations
 
     // region Use Cases
+    @Override
+    public List<UserStatisticsStatusConstants> getPossibleStatus() {
+        return Arrays.stream(UserStatisticsStatusConstants.values()).collect(Collectors.toList());
+    }
     // endregion Use Cases
 }

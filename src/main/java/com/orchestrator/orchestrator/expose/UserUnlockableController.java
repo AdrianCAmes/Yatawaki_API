@@ -1,15 +1,17 @@
 package com.orchestrator.orchestrator.expose;
 
 import com.orchestrator.orchestrator.business.UserUnlockableService;
+import com.orchestrator.orchestrator.model.Unlockable;
 import com.orchestrator.orchestrator.model.UserUnlockable;
-import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableChangeRequestDto;
-import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableCreateRequestDto;
-import com.orchestrator.orchestrator.model.dto.userunlockable.request.UserUnlockableUpdateRequestDto;
+import com.orchestrator.orchestrator.model.dto.userunlockable.request.*;
+import com.orchestrator.orchestrator.model.dto.userunlockable.response.UserUnlockableFilteredResponseDto;
 import com.orchestrator.orchestrator.utils.UserUnlockableUtils;
+import com.orchestrator.orchestrator.utils.constants.UserUnlockableStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/user-unlockable")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class UserUnlockableController {
     private final UserUnlockableService userUnlockableService;
     private final UserUnlockableUtils userUnlockableUtils;
@@ -108,5 +111,78 @@ public class UserUnlockableController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/user/{userId}/filtered")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findFilteredUnlockablesByUserId(@PathVariable("userId") Long userId) {
+        log.info("Get operation in /user-unlockable/user/{}/filtered", userId);
+        try {
+            UserUnlockableFilteredResponseDto retrievedUserUnlockables = userUnlockableService.findFilteredUnlockablesByUserId(userId);
+            return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/user/{userId}/avatars")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findAvatarsByUserId(@PathVariable("userId") Long userId) {
+        log.info("Get operation in /user-unlockable/user/{}/avatars", userId);
+        try {
+            List<Unlockable> retrievedUserUnlockables = userUnlockableService.findAvatarsByUserId(userId);
+            return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/user/{userId}/market")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findMarketUnlockablesByUserId(@PathVariable("userId") Long userId) {
+        log.info("Get operation in /user-unlockable/user/{}/market", userId);
+        try {
+            UserUnlockableFilteredResponseDto retrievedUserUnlockables = userUnlockableService.findMarketUnlockablesByUserId(userId);
+            return new ResponseEntity<>(retrievedUserUnlockables, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/unlock")
+    public ResponseEntity<Object> unlockObjects(@RequestBody UserUnlockableUnlockRequestDto userUnlockableUnlockRequestDto) {
+        log.info("Post operation in /user-unlockable/unlock");
+        try {
+            List<Unlockable> unlockedObjects = userUnlockableService.unlockObjectsByUnlocker(userUnlockableUnlockRequestDto);
+            return new ResponseEntity<>(unlockedObjects, HttpStatus.OK);
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/trade")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> tradeObject(@RequestBody UserUnlockableTradeRequestDto userUnlockableTradeRequestDto) {
+        log.info("Post operation in /user-unlockable/trade");
+        try {
+            Unlockable unlockedObject = userUnlockableService.tradeObject(userUnlockableTradeRequestDto);
+            return new ResponseEntity<>(unlockedObject, HttpStatus.OK);
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /user-unlockable/status");
+        try {
+            List<UserUnlockableStatusConstants> possibleStatus = userUnlockableService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

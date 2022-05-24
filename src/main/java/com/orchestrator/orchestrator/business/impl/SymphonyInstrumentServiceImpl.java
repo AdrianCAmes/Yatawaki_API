@@ -1,19 +1,26 @@
 package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.SymphonyInstrumentService;
+import com.orchestrator.orchestrator.model.Instrument;
 import com.orchestrator.orchestrator.model.SymphonyInstrument;
 import com.orchestrator.orchestrator.repository.SymphonyInstrumentRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.SymphonyInstrumentStatusConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class SymphonyInstrumentServiceImpl implements SymphonyInstrumentService {
+    // Self repository
     private final SymphonyInstrumentRepository symphonyInstrumentRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -67,5 +74,14 @@ public class SymphonyInstrumentServiceImpl implements SymphonyInstrumentService 
     // endregion CRUD Operations
 
     // region Use Cases
+    @Override
+    public List<Instrument> findInstrumentsBySymphony(Long idSymphony) {
+        return symphonyInstrumentRepository.findInstrumentsBySymphony(idSymphony);
+    }
+
+    @Override
+    public List<SymphonyInstrumentStatusConstants> getPossibleStatus() {
+        return Arrays.stream(SymphonyInstrumentStatusConstants.values()).collect(Collectors.toList());
+    }
     // endregion Use Cases
 }

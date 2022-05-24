@@ -4,16 +4,22 @@ import com.orchestrator.orchestrator.business.ComposerService;
 import com.orchestrator.orchestrator.model.Composer;
 import com.orchestrator.orchestrator.repository.ComposerRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ComposerServiceImpl implements ComposerService {
+    // Self repository
     private final ComposerRepository composerRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -67,5 +73,9 @@ public class ComposerServiceImpl implements ComposerService {
     // endregion CRUD Operations
 
     // region Use Cases
+    @Override
+    public List<ComposerStatusConstants> getPossibleStatus() {
+        return Arrays.stream(ComposerStatusConstants.values()).collect(Collectors.toList());
+    }
     // endregion Use Cases
 }

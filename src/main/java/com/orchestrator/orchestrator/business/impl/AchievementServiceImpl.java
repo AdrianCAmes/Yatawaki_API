@@ -12,7 +12,9 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class AchievementServiceImpl implements AchievementService {
+    // Self repository
     private final AchievementRepository achievementRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations

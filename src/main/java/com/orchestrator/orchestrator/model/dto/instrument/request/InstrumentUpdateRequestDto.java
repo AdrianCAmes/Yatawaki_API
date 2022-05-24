@@ -6,7 +6,8 @@ import lombok.Data;
 public class InstrumentUpdateRequestDto {
     private Long idInstrument;
     private String name;
-    private String description;
+    private String longDescription;
+    private String shortDescription;
     private String type;
     private Integer status;
 }

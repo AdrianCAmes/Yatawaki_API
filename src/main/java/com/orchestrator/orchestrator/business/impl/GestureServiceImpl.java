@@ -4,16 +4,22 @@ import com.orchestrator.orchestrator.business.GestureService;
 import com.orchestrator.orchestrator.model.Gesture;
 import com.orchestrator.orchestrator.repository.GestureRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.GestureStatusConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GestureServiceImpl implements GestureService {
+    // Self repository
     private final GestureRepository gestureRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -67,5 +73,9 @@ public class GestureServiceImpl implements GestureService {
     // endregion CRUD Operations
 
     // region Use Cases
+    @Override
+    public List<GestureStatusConstants> getPossibleStatus() {
+        return Arrays.stream(GestureStatusConstants.values()).collect(Collectors.toList());
+    }
     // endregion Use Cases
 }

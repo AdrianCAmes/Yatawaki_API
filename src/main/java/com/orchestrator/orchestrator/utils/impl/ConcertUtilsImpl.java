@@ -8,7 +8,7 @@ import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCreateRequ
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.ConcertUtils;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
-import com.orchestrator.orchestrator.utils.constants.GameStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.ConcertStatusConstants;
 import com.orchestrator.orchestrator.utils.constants.NumericConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -33,20 +33,24 @@ public class ConcertUtilsImpl implements ConcertUtils {
         concert.setPoints(NumericConstants.ZERO.getValue());
         concert.setAccuracyRate(NumericConstants.ZERO.getValue().doubleValue());
         concert.setGesturesCompleted(NumericConstants.ZERO.getValue());
-        concert.setStatus(GameStatusConstants.ACTIVE.getValue());
+        concert.setStatus(ConcertStatusConstants.STARTED.getValue());
         generalUtils.mapFields(concertCreateRequestDto, concert);
         return concert;
     }
 
     @Override
     public Concert buildDomainFromUpdateRequestDto(ConcertUpdateRequestDto concertUpdateRequestDto) throws IllegalAccessException {
-        User user = new User();
-        user.setIdUser(concertUpdateRequestDto.getIdUser());
-        Symphony symphony = new Symphony();
-        symphony.setIdUnlockable(concertUpdateRequestDto.getIdSymphony());
         Concert concert = new Concert();
-        concert.setUser(user);
-        concert.setSymphony(symphony);
+        if (concertUpdateRequestDto.getIdUser() != null) {
+            User user = new User();
+            user.setIdUser(concertUpdateRequestDto.getIdUser());
+            concert.setUser(user);
+        }
+        if (concertUpdateRequestDto.getIdSymphony() != null) {
+            Symphony symphony = new Symphony();
+            symphony.setIdUnlockable(concertUpdateRequestDto.getIdSymphony());
+            concert.setSymphony(symphony);
+        }
         generalUtils.mapFields(concertUpdateRequestDto, concert);
         return concert;
     }

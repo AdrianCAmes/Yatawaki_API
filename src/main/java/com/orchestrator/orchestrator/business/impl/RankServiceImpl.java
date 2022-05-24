@@ -4,16 +4,22 @@ import com.orchestrator.orchestrator.business.RankService;
 import com.orchestrator.orchestrator.model.Rank;
 import com.orchestrator.orchestrator.repository.RankRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.RankStatusConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RankServiceImpl implements RankService {
+    // Self repository
     private final RankRepository rankRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -68,8 +74,8 @@ public class RankServiceImpl implements RankService {
 
     // region Use Cases
     @Override
-    public Rank findByName(String name) {
-        return rankRepository.findByName(name);
+    public List<RankStatusConstants> getPossibleStatus() {
+        return Arrays.stream(RankStatusConstants.values()).collect(Collectors.toList());
     }
     // endregion Use Cases
 }

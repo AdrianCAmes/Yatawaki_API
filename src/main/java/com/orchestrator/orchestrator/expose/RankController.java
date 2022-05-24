@@ -6,10 +6,12 @@ import com.orchestrator.orchestrator.model.dto.rank.request.RankChangeRequestDto
 import com.orchestrator.orchestrator.model.dto.rank.request.RankCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.rank.request.RankUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.RankUtils;
+import com.orchestrator.orchestrator.utils.constants.RankStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/rank")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class RankController {
     private final RankService rankService;
     private final RankUtils rankUtils;
@@ -108,5 +111,15 @@ public class RankController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /rank/status");
+        try {
+            List<RankStatusConstants> possibleStatus = rankService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

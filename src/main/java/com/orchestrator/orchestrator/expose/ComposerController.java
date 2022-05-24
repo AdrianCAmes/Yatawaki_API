@@ -6,10 +6,12 @@ import com.orchestrator.orchestrator.model.dto.composer.request.ComposerChangeRe
 import com.orchestrator.orchestrator.model.dto.composer.request.ComposerCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.composer.request.ComposerUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.ComposerUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/composer")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class ComposerController {
     private final ComposerService composerService;
     private final ComposerUtils composerUtils;
@@ -108,5 +111,15 @@ public class ComposerController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /composer/status");
+        try {
+            List<ComposerStatusConstants> possibleStatus = composerService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

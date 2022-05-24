@@ -6,4 +6,6 @@ import lombok.Data;
 public class SymphonyInstrumentCreateRequestDto {
     private Long idSymphony;
     private Long idInstrument;
+    private String track;
+    private String position;
 }

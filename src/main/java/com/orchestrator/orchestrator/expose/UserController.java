@@ -2,14 +2,17 @@ package com.orchestrator.orchestrator.expose;
 
 import com.orchestrator.orchestrator.business.UserService;
 import com.orchestrator.orchestrator.model.User;
-import com.orchestrator.orchestrator.model.dto.user.request.UserChangeRequestDto;
-import com.orchestrator.orchestrator.model.dto.user.request.UserCreateRequestDto;
-import com.orchestrator.orchestrator.model.dto.user.request.UserUpdateRequestDto;
+import com.orchestrator.orchestrator.model.dto.user.request.*;
+import com.orchestrator.orchestrator.model.dto.user.response.UserProfileResponseDto;
+import com.orchestrator.orchestrator.model.dto.user.response.UserResumeResponseDto;
 import com.orchestrator.orchestrator.utils.UserUtils;
+import com.orchestrator.orchestrator.utils.constants.UserRoleConstants;
+import com.orchestrator.orchestrator.utils.constants.UserStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/user")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class UserController {
     private final UserService userService;
     private final UserUtils userUtils;
@@ -38,6 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> findUserById(@PathVariable("id") Long id) {
         log.info("Get operation in /user/{}", id);
         try {
@@ -68,6 +73,7 @@ public class UserController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> changeUser(@RequestBody UserChangeRequestDto userChangeRequestDto) {
         log.info("Put operation in /user");
         try {
@@ -82,6 +88,7 @@ public class UserController {
     }
 
     @PatchMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Object> updateUser(@RequestBody UserUpdateRequestDto userUpdateRequestDto) {
         log.info("Patch operation in /user");
         try {
@@ -109,14 +116,65 @@ public class UserController {
 
     // region Use Cases
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody UserCreateRequestDto userCreateRequestDto) {
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<Object> register(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
         log.info("Post operation in /user/register");
         try {
-            User userToSave = userUtils.buildDomainFromCreateRequestDto(userCreateRequestDto);
-            User registeredUser = userService.register(userToSave);
+            User userToRegister = userUtils.buildDomainFromRegisterRequestDto(userRegisterRequestDto);
+            User registeredUser = userService.register(userToRegister);
             return new ResponseEntity<>(registeredUser, HttpStatus.OK);
         } catch (IllegalAccessException iae) {
             return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{username}/resume")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findUserResumeByUsername(@PathVariable("username") String username) {
+        log.info("Get operation in /user/{}/resume", username);
+        try {
+            UserResumeResponseDto userResume = userService.findUserResumeByUsername(username);
+            return new ResponseEntity<>(userResume, HttpStatus.OK);
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @GetMapping("/{id}/profile")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findUserProfileById(@PathVariable("id") Long id) {
+        log.info("Get operation in /user/{}/profile", id);
+        try {
+            UserProfileResponseDto userProfile = userService.findUserProfileByUserId(id);
+            return new ResponseEntity<>(userProfile, HttpStatus.OK);
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /user/status");
+        try {
+            List<UserStatusConstants> possibleStatus = userService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<Object> getPossibleRoles() {
+        log.info("Get operation in /user/roles");
+        try {
+            List<UserRoleConstants> possibleRoles = userService.getPossibleRoles();
+            return new ResponseEntity<>(possibleRoles, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

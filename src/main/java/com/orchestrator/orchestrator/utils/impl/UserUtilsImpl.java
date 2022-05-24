@@ -4,6 +4,7 @@ import com.orchestrator.orchestrator.model.User;
 import com.orchestrator.orchestrator.model.UserStatistics;
 import com.orchestrator.orchestrator.model.dto.user.request.UserChangeRequestDto;
 import com.orchestrator.orchestrator.model.dto.user.request.UserCreateRequestDto;
+import com.orchestrator.orchestrator.model.dto.user.request.UserRegisterRequestDto;
 import com.orchestrator.orchestrator.model.dto.user.request.UserUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
 import com.orchestrator.orchestrator.utils.UserUtils;
@@ -23,18 +24,21 @@ public class UserUtilsImpl implements UserUtils {
         userStatistics.setIdUserStatistics(userCreateRequestDto.getIdUserStatistics());
         User user = new User();
         user.setUserStatistics(userStatistics);
-        user.setCurrencyOwned(NumericConstants.ZERO.getValue());
+        user.setCoinsOwned(NumericConstants.ZERO.getValue());
         user.setStatus(UserStatusConstants.ACTIVE.getValue());
+        user.setShowTutorials(Boolean.TRUE);
         generalUtils.mapFields(userCreateRequestDto, user);
         return user;
     }
 
     @Override
     public User buildDomainFromUpdateRequestDto(UserUpdateRequestDto userUpdateRequestDto) throws IllegalAccessException {
-        UserStatistics userStatistics = new UserStatistics();
-        userStatistics.setIdUserStatistics(userUpdateRequestDto.getIdUserStatistics());
         User user = new User();
-        user.setUserStatistics(userStatistics);
+        if (userUpdateRequestDto.getIdUserStatistics() != null) {
+            UserStatistics userStatistics = new UserStatistics();
+            userStatistics.setIdUserStatistics(userUpdateRequestDto.getIdUserStatistics());
+            user.setUserStatistics(userStatistics);
+        }
         generalUtils.mapFields(userUpdateRequestDto, user);
         return user;
     }
@@ -46,6 +50,16 @@ public class UserUtilsImpl implements UserUtils {
         User user = new User();
         user.setUserStatistics(userStatistics);
         generalUtils.mapFields(userChangeRequestDto, user);
+        return user;
+    }
+
+    @Override
+    public User buildDomainFromRegisterRequestDto(UserRegisterRequestDto userRegisterRequestDto) throws IllegalAccessException {
+        User user = new User();
+        user.setCoinsOwned(NumericConstants.ZERO.getValue());
+        user.setStatus(UserStatusConstants.ACTIVE.getValue());
+        user.setShowTutorials(Boolean.TRUE);
+        generalUtils.mapFields(userRegisterRequestDto, user);
         return user;
     }
 
@@ -71,5 +85,12 @@ public class UserUtilsImpl implements UserUtils {
         userChangeRequestDto.setIdUserStatistics(user.getUserStatistics().getIdUserStatistics());
         generalUtils.mapFields(user, userChangeRequestDto);
         return userChangeRequestDto;
+    }
+
+    @Override
+    public UserRegisterRequestDto buildRegisterRequestDtoFromDomain(User user) throws IllegalAccessException {
+        UserRegisterRequestDto userRegisterRequestDto = new UserRegisterRequestDto();
+        generalUtils.mapFields(user, userRegisterRequestDto);
+        return userRegisterRequestDto;
     }
 }

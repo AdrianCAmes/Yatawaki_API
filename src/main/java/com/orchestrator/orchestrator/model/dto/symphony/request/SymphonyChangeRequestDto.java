@@ -9,4 +9,6 @@ public class SymphonyChangeRequestDto extends UnlockableChangeRequestDto {
     private Integer year;
     private Integer duration;
     private String type;
+    private String previewTrack;
+    private Integer initialBpm;
 }

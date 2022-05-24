@@ -3,6 +3,7 @@ package com.orchestrator.orchestrator.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "[User]", schema = "[Orchestrator]")
@@ -11,15 +12,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUser;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idUserStatistics", referencedColumnName = "idUserStatistics")
     private UserStatistics userStatistics;
     @Column(unique = true)
     private String nickname;
-    private String name;
+    private String password;
+    private String firstname;
     private String lastname;
     @Column(unique = true)
     private String mail;
-    private Integer currencyOwned;
+    private LocalDate birthDate;
+    private Integer coinsOwned;
     private Integer status;
+    private String role;
+    private Boolean showTutorials;
 }

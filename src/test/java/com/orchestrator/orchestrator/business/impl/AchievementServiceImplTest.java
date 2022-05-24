@@ -44,13 +44,10 @@ class AchievementServiceImplTest {
 
     @Test
     void update() throws IllegalAccessException {
-        byte[] icon = {1, 2, 3, 4, 5};
-
         Achievement achievementToUpdate = new Achievement();
         achievementToUpdate.setDescription("New Description");
         achievementToUpdate.setUnlockerType("Rank");
         achievementToUpdate.setUnlockerValue(4);
-        achievementToUpdate.setIcon(icon);
 
         Achievement retrievedAchievement = new Achievement();
         retrievedAchievement.setIdUnlockable(4L);

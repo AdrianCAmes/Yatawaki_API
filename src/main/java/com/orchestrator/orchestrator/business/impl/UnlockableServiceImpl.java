@@ -4,16 +4,24 @@ import com.orchestrator.orchestrator.business.UnlockableService;
 import com.orchestrator.orchestrator.model.Unlockable;
 import com.orchestrator.orchestrator.repository.UnlockableRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.UnlockableRarenessConstants;
+import com.orchestrator.orchestrator.utils.constants.UnlockableStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UnlockableServiceImpl implements UnlockableService {
+    // Self repository
     private final UnlockableRepository unlockableRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -68,8 +76,18 @@ public class UnlockableServiceImpl implements UnlockableService {
 
     // region Use Cases
     @Override
-    public List<Unlockable> findByUnlockerTypeAndUnlockerValue(String unlockerType, Integer unlockerValue) {
-        return unlockableRepository.findByUnlockerTypeAndUnlockerValue(unlockerType, unlockerValue);
+    public List<UnlockableStatusConstants> getPossibleStatus() {
+        return Arrays.stream(UnlockableStatusConstants.values()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UnlockerTypeConstants> getPossibleUnlockerTypes() {
+        return Arrays.stream(UnlockerTypeConstants.values()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UnlockableRarenessConstants> getPossibleRareness() {
+        return Arrays.stream(UnlockableRarenessConstants.values()).collect(Collectors.toList());
     }
     // endregion Use Cases
 }

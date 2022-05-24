@@ -4,16 +4,22 @@ import com.orchestrator.orchestrator.business.InstrumentService;
 import com.orchestrator.orchestrator.model.Instrument;
 import com.orchestrator.orchestrator.repository.InstrumentRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.InstrumentStatusConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class InstrumentServiceImpl implements InstrumentService {
+    // Self repository
     private final InstrumentRepository instrumentRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -67,5 +73,14 @@ public class InstrumentServiceImpl implements InstrumentService {
     // endregion CRUD Operations
 
     // region Use Cases
+    @Override
+    public List<Instrument> findInstrumentsByName(String name) {
+        return instrumentRepository.findInstrumentsByName(name);
+    }
+
+    @Override
+    public List<InstrumentStatusConstants> getPossibleStatus() {
+        return Arrays.stream(InstrumentStatusConstants.values()).collect(Collectors.toList());
+    }
     // endregion Use Cases
 }

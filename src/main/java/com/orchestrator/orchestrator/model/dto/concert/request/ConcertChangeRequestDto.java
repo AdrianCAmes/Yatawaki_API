@@ -1,10 +1,15 @@
 package com.orchestrator.orchestrator.model.dto.concert.request;
 
-import com.orchestrator.orchestrator.model.dto.game.request.GameChangeRequestDto;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
-public class ConcertChangeRequestDto extends GameChangeRequestDto {
+public class ConcertChangeRequestDto {
+    private Long idConcert;
+    private Long idSymphony;
+    private LocalDate playedDate;
+    private Integer status;
     private Long idUser;
     private Integer points;
     private Double accuracyRate;

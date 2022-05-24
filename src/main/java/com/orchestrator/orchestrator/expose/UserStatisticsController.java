@@ -1,16 +1,17 @@
 package com.orchestrator.orchestrator.expose;
 
 import com.orchestrator.orchestrator.business.UserStatisticsService;
-import com.orchestrator.orchestrator.model.User;
 import com.orchestrator.orchestrator.model.UserStatistics;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsChangeRequestDto;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.userstatistics.request.UserStatisticsUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.UserStatisticsUtils;
+import com.orchestrator.orchestrator.utils.constants.UserStatisticsStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/user-statistics")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class UserStatisticsController {
     private final UserStatisticsService userStatisticsService;
     private final UserStatisticsUtils userStatisticsUtils;
@@ -39,6 +41,7 @@ public class UserStatisticsController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
     public ResponseEntity<Object> findUserStatisticsById(@PathVariable("id") Long id) {
         log.info("Get operation in /user-statistics/{}", id);
         try {
@@ -109,5 +112,15 @@ public class UserStatisticsController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /user-statistics/status");
+        try {
+            List<UserStatisticsStatusConstants> possibleStatus = userStatisticsService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

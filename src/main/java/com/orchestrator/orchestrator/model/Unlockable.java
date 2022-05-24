@@ -17,7 +17,7 @@ public class Unlockable {
     private String rareness;
     private String unlockerType;
     private Integer unlockerValue;
-    private Integer currencyCost;
-    private byte[] icon;
+    private Integer coinsCost;
+    private String icon;
     private Integer status;
 }

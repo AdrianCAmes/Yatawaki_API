@@ -33,13 +33,17 @@ public class SymphonyGestureUtilsImpl implements SymphonyGestureUtils {
 
     @Override
     public SymphonyGesture buildDomainFromUpdateRequestDto(SymphonyGestureUpdateRequestDto symphonyGestureUpdateRequestDto) throws IllegalAccessException {
-        Symphony symphony = new Symphony();
-        symphony.setIdUnlockable(symphonyGestureUpdateRequestDto.getIdSymphony());
-        Gesture gesture = new Gesture();
-        gesture.setIdGesture(symphonyGestureUpdateRequestDto.getIdGesture());
         SymphonyGesture symphonyGesture = new SymphonyGesture();
-        symphonyGesture.setSymphony(symphony);
-        symphonyGesture.setGesture(gesture);
+        if (symphonyGestureUpdateRequestDto.getIdSymphony() != null) {
+            Symphony symphony = new Symphony();
+            symphony.setIdUnlockable(symphonyGestureUpdateRequestDto.getIdSymphony());
+            symphonyGesture.setSymphony(symphony);
+        }
+        if (symphonyGestureUpdateRequestDto.getIdGesture() != null) {
+            Gesture gesture = new Gesture();
+            gesture.setIdGesture(symphonyGestureUpdateRequestDto.getIdGesture());
+            symphonyGesture.setGesture(gesture);
+        }
         generalUtils.mapFields(symphonyGestureUpdateRequestDto, symphonyGesture);
         return symphonyGesture;
     }

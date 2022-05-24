@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class RankCreateRequestDto {
     private String name;
+    private Integer level;
     private Integer maxExperience;
 }

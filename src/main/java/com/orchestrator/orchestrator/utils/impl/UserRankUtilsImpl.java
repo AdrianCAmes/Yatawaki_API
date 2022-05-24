@@ -38,13 +38,17 @@ public class UserRankUtilsImpl implements UserRankUtils {
 
     @Override
     public UserRank buildDomainFromUpdateRequestDto(UserRankUpdateRequestDto userRankUpdateRequestDto) throws IllegalAccessException {
-        User user = new User();
-        user.setIdUser(userRankUpdateRequestDto.getIdUser());
-        Rank rank = new Rank();
-        rank.setIdRank(userRankUpdateRequestDto.getIdRank());
         UserRank userRank = new UserRank();
-        userRank.setUser(user);
-        userRank.setRank(rank);
+        if (userRankUpdateRequestDto.getIdUser() != null) {
+            User user = new User();
+            user.setIdUser(userRankUpdateRequestDto.getIdUser());
+            userRank.setUser(user);
+        }
+        if (userRankUpdateRequestDto.getIdRank() != null) {
+            Rank rank = new Rank();
+            rank.setIdRank(userRankUpdateRequestDto.getIdRank());
+            userRank.setRank(rank);
+        }
         generalUtils.mapFields(userRankUpdateRequestDto, userRank);
         return userRank;
     }

@@ -2,14 +2,20 @@ package com.orchestrator.orchestrator.model.dto.user.request;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class UserUpdateRequestDto {
     private Long idUser;
     private Long idUserStatistics;
     private String nickname;
-    private String name;
+    private String password;
+    private String firstname;
     private String lastname;
     private String mail;
-    private Integer currencyOwned;
+    private LocalDate birthDate;
+    private Integer coinsOwned;
     private Integer status;
+    private String role;
+    private Boolean showTutorials;
 }

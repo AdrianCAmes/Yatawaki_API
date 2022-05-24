@@ -3,13 +3,18 @@ package com.orchestrator.orchestrator.expose;
 import com.orchestrator.orchestrator.business.ConcertService;
 import com.orchestrator.orchestrator.model.Concert;
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertChangeRequestDto;
+import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCompleteRequestDto;
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.concert.request.ConcertUpdateRequestDto;
+import com.orchestrator.orchestrator.model.dto.concert.response.ConcertCompleteResponseDto;
+import com.orchestrator.orchestrator.model.dto.concert.response.ConcertStartResponseDto;
 import com.orchestrator.orchestrator.utils.ConcertUtils;
+import com.orchestrator.orchestrator.utils.constants.ConcertStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/concert")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class ConcertController {
     private final ConcertService concertService;
     private final ConcertUtils concertUtils;
@@ -108,5 +114,40 @@ public class ConcertController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @PostMapping("/start")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> startConcert(@RequestBody ConcertCreateRequestDto concertCreateRequestDto) {
+        log.info("Delete operation in /concert/complete");
+        try {
+            Concert concertToStart = concertUtils.buildDomainFromCreateRequestDto(concertCreateRequestDto);
+            ConcertStartResponseDto concert = concertService.start(concertToStart);
+            return new ResponseEntity<>(concert, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/complete")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> completeConcert(@RequestBody ConcertCompleteRequestDto concertCompleteRequestDto) {
+        log.info("Delete operation in /concert/complete");
+        try {
+            ConcertCompleteResponseDto concert = concertService.complete(concertCompleteRequestDto);
+            return new ResponseEntity<>(concert, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /concert/status");
+        try {
+            List<ConcertStatusConstants> possibleStatus = concertService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

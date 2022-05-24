@@ -6,10 +6,12 @@ import com.orchestrator.orchestrator.model.dto.gesture.request.GestureChangeRequ
 import com.orchestrator.orchestrator.model.dto.gesture.request.GestureCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.gesture.request.GestureUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.GestureUtils;
+import com.orchestrator.orchestrator.utils.constants.GestureStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/gesture")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class GestureController {
     private final GestureService gestureService;
     private final GestureUtils gestureUtils;
@@ -108,5 +111,15 @@ public class GestureController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /gesture/status");
+        try {
+            List<GestureStatusConstants> possibleStatus = gestureService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

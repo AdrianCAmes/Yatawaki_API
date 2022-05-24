@@ -6,6 +6,7 @@ import lombok.Data;
 public class RankChangeRequestDto {
     private Long idRank;
     private String name;
+    private Integer level;
     private Integer maxExperience;
     private Integer status;
 }

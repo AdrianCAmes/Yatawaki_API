@@ -9,4 +9,6 @@ public class SymphonyCreateRequestDto extends UnlockableCreateRequestDto {
     private Integer year;
     private Integer duration;
     private String type;
+    private String previewTrack;
+    private Integer initialBpm;
 }

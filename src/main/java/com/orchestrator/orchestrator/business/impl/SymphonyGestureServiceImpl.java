@@ -4,16 +4,22 @@ import com.orchestrator.orchestrator.business.SymphonyGestureService;
 import com.orchestrator.orchestrator.model.SymphonyGesture;
 import com.orchestrator.orchestrator.repository.SymphonyGestureRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
+import com.orchestrator.orchestrator.utils.constants.ComposerStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.SymphonyGestureStatusConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class SymphonyGestureServiceImpl implements SymphonyGestureService {
+    // Self repository
     private final SymphonyGestureRepository symphonyGestureRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations
@@ -67,5 +73,9 @@ public class SymphonyGestureServiceImpl implements SymphonyGestureService {
     // endregion CRUD Operations
 
     // region Use Cases
+    @Override
+    public List<SymphonyGestureStatusConstants> getPossibleStatus() {
+        return Arrays.stream(SymphonyGestureStatusConstants.values()).collect(Collectors.toList());
+    }
     // endregion Use Cases
 }

@@ -9,6 +9,6 @@ public class UnlockableCreateRequestDto {
     private String rareness;
     private String unlockerType;
     private Integer unlockerValue;
-    private Integer currencyCost;
-    private byte[] icon;
+    private String icon;
+    private Integer coinsCost;
 }

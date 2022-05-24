@@ -36,13 +36,17 @@ public class UserUnlockableUtilsImpl implements UserUnlockableUtils {
 
     @Override
     public UserUnlockable buildDomainFromUpdateRequestDto(UserUnlockableUpdateRequestDto userUnlockableUpdateRequestDto) throws IllegalAccessException {
-        User user = new User();
-        user.setIdUser(userUnlockableUpdateRequestDto.getIdUser());
-        Unlockable unlockable = new Unlockable();
-        unlockable.setIdUnlockable(userUnlockableUpdateRequestDto.getIdUnlockable());
         UserUnlockable userUnlockable = new UserUnlockable();
-        userUnlockable.setUser(user);
-        userUnlockable.setUnlockable(unlockable);
+        if (userUnlockableUpdateRequestDto.getIdUser() != null) {
+            User user = new User();
+            user.setIdUser(userUnlockableUpdateRequestDto.getIdUser());
+            userUnlockable.setUser(user);
+        }
+        if (userUnlockableUpdateRequestDto.getIdUnlockable() != null) {
+            Unlockable unlockable = new Unlockable();
+            unlockable.setIdUnlockable(userUnlockableUpdateRequestDto.getIdUnlockable());
+            userUnlockable.setUnlockable(unlockable);
+        }
         generalUtils.mapFields(userUnlockableUpdateRequestDto, userUnlockable);
         return userUnlockable;
     }

@@ -6,11 +6,17 @@ import com.orchestrator.orchestrator.model.dto.instrument.request.InstrumentChan
 import com.orchestrator.orchestrator.model.dto.instrument.request.InstrumentCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.instrument.request.InstrumentUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.InstrumentUtils;
+import com.orchestrator.orchestrator.utils.constants.InstrumentStatusConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/instrument")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class InstrumentController {
     private final InstrumentService instrumentService;
     private final InstrumentUtils instrumentUtils;
@@ -108,5 +115,27 @@ public class InstrumentController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/name/{name}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PLAYER')")
+    public ResponseEntity<Object> findInstrumentsByName(@PathVariable("name") String name){
+        log.info("Get operation in /instrument/name/{}", name);
+        try {
+            List<Instrument> retrievedInstruments = instrumentService.findInstrumentsByName(name);
+            return new ResponseEntity<>(retrievedInstruments, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /instrument/status");
+        try {
+            List<InstrumentStatusConstants> possibleStatus = instrumentService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }

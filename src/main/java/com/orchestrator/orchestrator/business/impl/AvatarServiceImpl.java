@@ -13,7 +13,9 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class AvatarServiceImpl implements AvatarService {
+    // Self repository
     private final AvatarRepository avatarRepository;
+    // Utils
     private final GeneralUtils generalUtils;
 
     // region CRUD Operations

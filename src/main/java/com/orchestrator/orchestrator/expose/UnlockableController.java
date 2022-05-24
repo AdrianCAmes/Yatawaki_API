@@ -6,11 +6,19 @@ import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableChan
 import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableCreateRequestDto;
 import com.orchestrator.orchestrator.model.dto.unlockable.request.UnlockableUpdateRequestDto;
 import com.orchestrator.orchestrator.utils.UnlockableUtils;
+import com.orchestrator.orchestrator.utils.constants.UnlockableRarenessConstants;
+import com.orchestrator.orchestrator.utils.constants.UnlockableStatusConstants;
+import com.orchestrator.orchestrator.utils.constants.UnlockerTypeConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/unlockable")
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 public class UnlockableController {
     private final UnlockableService unlockableService;
     private final UnlockableUtils unlockableUtils;
@@ -108,5 +117,37 @@ public class UnlockableController {
     // endregion CRUD Operations
 
     // region Use Cases
+    @GetMapping("/status")
+    public ResponseEntity<Object> getPossibleStatus() {
+        log.info("Get operation in /unlockable/status");
+        try {
+            List<UnlockableStatusConstants> possibleStatus = unlockableService.getPossibleStatus();
+            return new ResponseEntity<>(possibleStatus, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/unlocker-types")
+    public ResponseEntity<Object> getPossibleUnlockerTypes() {
+        log.info("Get operation in /unlockable/unlocker-types");
+        try {
+            List<UnlockerTypeConstants> possibleUnlockerTypes = unlockableService.getPossibleUnlockerTypes();
+            return new ResponseEntity<>(possibleUnlockerTypes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/rareness")
+    public ResponseEntity<Object> getPossibleRareness() {
+        log.info("Get operation in /unlockable/rareness");
+        try {
+            List<UnlockableRarenessConstants> possibleRareness = unlockableService.getPossibleRareness();
+            return new ResponseEntity<>(possibleRareness, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }
