@@ -7,10 +7,10 @@ spring:
   application:
     name: customer-info-service
   datasource:
-    url: jdbc:sqlserver://localhost;databaseName=DBOrchestrator
+    url: jdbc:sqlserver://development-yatawaki.database.windows.net;databaseName=DBOrchestrator
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    username: sa
-    password: sa
+    username: yadmin
+    password: Contra123
   jpa:
     properties:
       hibernate:
