@@ -43,12 +43,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000/", "http://localhost:4200/", "https://yatawaki-react.azurewebsites.net/", "https://yatawaki.azurewebsites.net/"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000/", "http://localhost:4200/", "https://yatawaki-react.azurewebsites.net/", "https://yatawaki.azurewebsites.net/", "http://yatawaki-react.azurewebsites.net/", "http://yatawaki.azurewebsites.net/"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","OPTIONS","PATCH"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setExposedHeaders(List.of("Authorization"));
 
-        String[] publicUrls = {"/api/v1/authenticate", "/api/v1/user/register"};
+        String[] publicUrls = {"/api/v1/authenticate", "/api/v1/user/register", "/api/v1/user/mail"};
 
         http.cors().configurationSource(request -> corsConfiguration);
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -14,4 +14,5 @@ public interface UserService extends BaseService<User, Long> {
     UserProfileResponseDto findUserProfileByUserId(Long id) throws IllegalAccessException;
     List<UserStatusConstants> getPossibleStatus();
     List<UserRoleConstants> getPossibleRoles();
+    User updateByMail(User user) throws IllegalAccessException;
 }
