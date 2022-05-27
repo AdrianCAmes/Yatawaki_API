@@ -179,5 +179,20 @@ public class UserController {
             return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PatchMapping("/mail")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<Object> updateUserByMail(@RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+        log.info("Patch operation in /user/mail");
+        try {
+            User userToUpdate = userUtils.buildDomainFromUpdateRequestDto(userUpdateRequestDto);
+            User updatedUser = userService.updateByMail(userToUpdate);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } catch (IllegalAccessException iae) {
+            return new ResponseEntity<>("Error occurred during fields mapping: " + iae.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred during operation: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // endregion Use Cases
 }
