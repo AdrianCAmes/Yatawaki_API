@@ -191,5 +191,17 @@ public class UserServiceImpl implements UserService {
     public List<UserRoleConstants> getPossibleRoles() {
         return Arrays.stream(UserRoleConstants.values()).collect(Collectors.toList());
     }
+
+    @Override
+    public User updateByMail(User user) throws IllegalAccessException {
+        User userToUpdate = userRepository.findByUniqueIdentifier(user.getMail()).orElse(null);
+        if (userToUpdate != null) {
+            if (user.getPassword() != null) user.setPassword(passwordEncoder.encode(user.getPassword()));
+            generalUtils.mapFields(user, userToUpdate);
+            return userRepository.save(userToUpdate);
+        } else {
+            throw new NoSuchElementException("Element does not exist in database");
+        }
+    }
     // endregion Use Cases
 }
