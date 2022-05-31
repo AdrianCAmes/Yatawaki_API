@@ -1,7 +1,3 @@
-# Server config
-server:
-  port: 8081
-
 # Spring config
 spring:
   application:
