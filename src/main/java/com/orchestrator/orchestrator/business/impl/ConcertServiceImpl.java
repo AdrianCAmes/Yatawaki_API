@@ -126,6 +126,7 @@ public class ConcertServiceImpl implements ConcertService {
     public ConcertStartResponseDto start(Concert concert) throws IllegalAccessException {
         Concert createdConcert = create(concert);
         Symphony startSymphony = symphonyRepository.findById(createdConcert.getSymphony().getIdUnlockable()).orElse(null);
+
         if (startSymphony == null) {
             throw new NoSuchElementException("Symphony not found");
         }
