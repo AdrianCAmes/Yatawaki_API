@@ -23,3 +23,8 @@ jobs:
         run: |
           mvn --batch-mode --update-snapshots package
           mvn test jacoco:report
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: /target/site/index.html
