@@ -10,7 +10,7 @@ spring:
     url: jdbc:sqlserver://localhost;databaseName=DBOrchestrator
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     username: sa
-    password: Root1234
+    password: sa
   jpa:
     properties:
       hibernate:
