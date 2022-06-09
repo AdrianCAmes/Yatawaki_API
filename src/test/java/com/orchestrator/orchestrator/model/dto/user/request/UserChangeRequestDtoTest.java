@@ -22,6 +22,7 @@ public class UserChangeRequestDtoTest extends DtoTest<UserChangeRequestDto> {
         EqualsTester<UserChangeRequestDto> equalsTester = EqualsTester.newInstance( new UserChangeRequestDto() );
         equalsTester.assertEqual( new UserChangeRequestDto(), new UserChangeRequestDto() );
         equalsTester.assertNotEqual( userChangeRequestDto, userChangeRequestDto1);
+        equalsTester.assertImplementsEqualsAndHashCode();
     }
 
 }

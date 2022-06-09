@@ -2,6 +2,7 @@ package com.orchestrator.orchestrator.business.impl;
 
 import com.orchestrator.orchestrator.business.InstrumentService;
 import com.orchestrator.orchestrator.model.Instrument;
+import com.orchestrator.orchestrator.model.dto.instrument.response.InstrumentStartResponseDto;
 import com.orchestrator.orchestrator.repository.InstrumentRepository;
 import com.orchestrator.orchestrator.utils.GeneralUtils;
 import com.orchestrator.orchestrator.utils.constants.InstrumentStatusConstants;
@@ -45,6 +46,16 @@ public class InstrumentServiceImplTest {
     void create() {
         Instrument instrument = new Instrument();
         instrument.setStatus(1);
+        InstrumentStartResponseDto instrumentStartResponseDto = new InstrumentStartResponseDto();
+        instrumentStartResponseDto.setName("hola");
+        instrumentStartResponseDto.setIcon("icon");
+        instrumentStartResponseDto.setPosition("yes");
+        instrumentStartResponseDto.setTrack("track");
+
+        assertEquals(instrumentStartResponseDto.getIcon(), "icon");
+        assertEquals(instrumentStartResponseDto.getName(), "hola");
+        assertEquals(instrumentStartResponseDto.getPosition(), "yes");
+        assertEquals(instrumentStartResponseDto.getTrack(), "track");
 
         Instrument createdInstrument = new Instrument();
         createdInstrument.setIdInstrument(1L);

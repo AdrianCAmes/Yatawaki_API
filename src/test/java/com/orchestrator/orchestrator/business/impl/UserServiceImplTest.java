@@ -337,7 +337,6 @@ public class UserServiceImplTest {
         UserStatisticsCreateRequestDto userStatisticsCreateRequestDto = new UserStatisticsCreateRequestDto();
         UserStatistics userStatisticsToSave = new UserStatistics();
         UserStatistics userStatistics = new UserStatistics();
-        userStatistics.setStatus(2);
 
         when(userStatisticsUtils.buildDomainFromCreateRequestDto(userStatisticsCreateRequestDto)).thenReturn(userStatisticsToSave);
 
@@ -376,7 +375,7 @@ public class UserServiceImplTest {
                 userUnlockableToSave.setStatus(3);
                 unlockable.setStatus(3);
             }
-            when(userUnlockableRepository.save(new UserUnlockable())).thenReturn(userUnlockableToSave);
+
         }
 
         User result = userService.register(user);
@@ -614,7 +613,7 @@ public class UserServiceImplTest {
 
         final UserProfileResponseDto result = userService.findUserProfileByUserId(1L);
 
-        assertEquals(result.toString(), userProfileResponseDto.toString());
+        assertEquals(result.getNickname(), userProfileResponseDto.getNickname());
 
     }
 
