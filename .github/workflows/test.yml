@@ -27,3 +27,8 @@ jobs:
         with:
           name: code-coverage-report
           path: target/site/*
+      - name: Analyze with SonarCloud
+        run: ./mvnw -B verify sonar:sonar -Dsonar.projectKey=yatawaki-api -Dsonar.organization=yatawaki -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=cea83e14ea7b4f48c510996d07e532ab2ce6df80
+        env:
+          GITHUB_TOKEN: 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
+          SONAR_TOKEN: cea83e14ea7b4f48c510996d07e532ab2ce6df80
