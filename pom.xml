@@ -114,6 +114,7 @@
 						<exclude>com/orchestrator/orchestrator/utils/constants/*</exclude>
 						<exclude>com/orchestrator/orchestrator/utils/impl/*</exclude>
 						<exclude>com/orchestrator/orchestrator/expose/*.class</exclude>
+						<exclude>com/orchestrator/orchestrator/*.class</exclude>
 					</excludes>
 				</configuration>
 				<version>0.8.2</version>
