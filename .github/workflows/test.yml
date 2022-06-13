@@ -31,5 +31,5 @@ jobs:
           GITHUB_TOKEN: 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
           SONAR_TOKEN: cea83e14ea7b4f48c510996d07e532ab2ce6df80
         run: |
-          mvn verify sonar:sonar -Dsonar.projectKey=yatawaki-api -Dsonar.organization=yatawaki -Dsonar.host.url=https://sonarcloud.io -pl !src/test/java/com/orchestrator/orchestrator/model/*
+          mvn verify sonar:sonar -Dsonar.projectKey=yatawaki-api -Dsonar.organization=yatawaki -Dsonar.host.url=https://sonarcloud.io
         
