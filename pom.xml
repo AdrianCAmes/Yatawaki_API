@@ -20,7 +20,9 @@
 			src/main/java/com/orchestrator/orchestrator/configuration/*,
 			src/main/java/com/orchestrator/orchestrator/utils/constants/*,
 			src/main/java/com/orchestrator/orchestrator/utils/**/*,
-			src/main/java/com/orchestrator/orchestrator/expose/*
+			src/main/java/com/orchestrator/orchestrator/expose/*,
+			src/main/java/com/orchestrator/orchestrator/OrchestratorApplication.java,
+			src/main/java/com/orchestrator/orchestrator/repository/*
 	    	</sonar.exclusions>
 	</properties>
 	<dependencies>
