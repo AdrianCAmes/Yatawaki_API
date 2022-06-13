@@ -16,14 +16,8 @@
 	<properties>
 		<java.version>11</java.version>
 		<sonar.exclusions>
-			com/orchestrator/orchestrator/model/*.class,
-			com/orchestrator/orchestrator/model/*.java,
-			com/orchestrator/orchestrator/configuration/*,
-			com/orchestrator/orchestrator/utils/constants/*,
-			com/orchestrator/orchestrator/utils/impl/*,
-			com/orchestrator/orchestrator/expose/AchievementController.java,
-			com/orchestrator/orchestrator/expose/**/*,
-			**/AchievementController.java
+			**/AchievementController.java,
+			**/AvatarController.java
 	    	</sonar.exclusions>
 	</properties>
 	<dependencies>
