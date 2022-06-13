@@ -29,7 +29,7 @@ jobs:
       - name: Analyze with SonarCloud
         run: |
           chmod +x mvnw
-          ./mvnw -B verify sonar:sonar -Dsonar.projectKey=yatawaki-api -Dsonar.organization=yatawaki -Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.reportPath=target/site/jacoco/jacoco.xml -Dsonar.login=cea83e14ea7b4f48c510996d07e532ab2ce6df80
+          ./mvnw -B verify sonar:sonar -Dsonar.projectKey=yatawaki-api -Dsonar.organization=yatawaki -Dsonar.host.url=https://sonarcloud.io -Dsonar.coverage.jacoco.xmlReportPaths=/home/runner/work/Yatawaki_API/Yatawaki_API/target/jacoco/jacoco.xml -Dsonar.login=cea83e14ea7b4f48c510996d07e532ab2ce6df80
         env:
           GITHUB_TOKEN: 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
           SONAR_TOKEN: cea83e14ea7b4f48c510996d07e532ab2ce6df80
