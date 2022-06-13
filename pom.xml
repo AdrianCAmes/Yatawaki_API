@@ -16,11 +16,12 @@
 	<properties>
 		<java.version>11</java.version>
 		<sonar.exclusions>
-			com/orchestrator/orchestrator/model/*,
+			com/orchestrator/orchestrator/model/*.class,
+			com/orchestrator/orchestrator/model/*.java,
 			com/orchestrator/orchestrator/configuration/*,
 			com/orchestrator/orchestrator/utils/constants/*,
 			com/orchestrator/orchestrator/utils/impl/*,
-			com/orchestrator/orchestrator/expose/*
+			com/orchestrator/orchestrator/expose/*.class
 	    	</sonar.exclusions>
 	</properties>
 	<dependencies>
