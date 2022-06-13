@@ -17,7 +17,8 @@
 		<java.version>11</java.version>
 		<sonar.exclusions>
 			**/AchievementController.java,
-			**/AvatarController.java
+			**/AvatarController.java,
+			src/main/java/com/orchestrator/orchestrator/utils/**/*
 	    	</sonar.exclusions>
 	</properties>
 	<dependencies>
