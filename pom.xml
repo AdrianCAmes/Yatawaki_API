@@ -21,7 +21,7 @@
 			com/orchestrator/orchestrator/configuration/*,
 			com/orchestrator/orchestrator/utils/constants/*,
 			com/orchestrator/orchestrator/utils/impl/*,
-			com/orchestrator/orchestrator/expose/*.class
+			com/orchestrator/orchestrator/expose/AchievementController.java
 	    	</sonar.exclusions>
 	</properties>
 	<dependencies>
