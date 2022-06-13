@@ -15,6 +15,13 @@
 	<description>API for orchestrator web app with body tracking</description>
 	<properties>
 		<java.version>11</java.version>
+		<sonar.exclusions>
+			com/orchestrator/orchestrator/model/*,
+			com/orchestrator/orchestrator/configuration/*,
+			com/orchestrator/orchestrator/utils/constants/*,
+			com/orchestrator/orchestrator/utils/impl/*,
+			com/orchestrator/orchestrator/expose/*
+	    	</sonar.exclusions>
 	</properties>
 	<dependencies>
 		<dependency>
