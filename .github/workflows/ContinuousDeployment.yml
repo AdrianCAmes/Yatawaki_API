@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Clonning Repository
-      
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build and push docker image
         with:
