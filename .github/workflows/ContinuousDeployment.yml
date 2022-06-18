@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Continuous Deployment with Docker
 
 on:
   push:
@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build and push docker image
         with:
